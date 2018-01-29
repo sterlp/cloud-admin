@@ -1,0 +1,26 @@
+.sql-result {
+    overflow-x: auto;
+    
+}
+
+.card-header .row .btn {
+    margin-top: 0.1rem;
+}
+
+td.inv-action-td {
+    padding-top: 0;
+    vertical-align: middle;
+    padding-bottom: 0;
+}
+
+.even {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.jsui-ace {
+    margin: 0px;
+}
+
+.jsui-ace.medium {
+    height: 150px;
+}

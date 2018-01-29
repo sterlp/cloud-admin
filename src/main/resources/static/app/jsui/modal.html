@@ -1,0 +1,16 @@
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" ng-if="$ctrl.hasHeader()">
+                <div ng-transclude="header"></div>
+                <button ng-click="$ctrl.show = false;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" ng-transclude="body">
+            </div>
+            <div ng-if="$ctrl.hasFooter()" class="modal-footer" ng-transclude="footer">
+            </div>
+        </div>
+    </div>
+</div>
