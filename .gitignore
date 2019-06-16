@@ -24,3 +24,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+backend/could-admin.mv.db
+backend/could-admin.trace.db
+could-admin.mv.db
