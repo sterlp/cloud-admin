@@ -20,6 +20,7 @@ import { TopnavComponent } from './components/topnav/topnav.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UsersComponent } from './pages/users/users.component';
+import { ConnectorsComponent } from './pages/connectors/connectors.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { UsersComponent } from './pages/users/users.component';
     TopnavComponent,
     SidebarComponent,
     DashboardComponent,
-    UsersComponent
+    UsersComponent,
+    ConnectorsComponent
   ],
   imports: [
     BrowserModule,

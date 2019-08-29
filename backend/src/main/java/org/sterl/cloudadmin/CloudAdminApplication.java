@@ -35,27 +35,28 @@ public class CloudAdminApplication implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// no caching for HTML pages
-		registry.addResourceHandler("*.html")
-			    .addResourceLocations("classpath:/META-INF/resources/webjars/cloud-admin-frontend/" + buildProperties.getVersion() + "/");
-		// the remaining stuff for 365 days
-		// apply custom config as needed
-		registry.addResourceHandler("/**")
-				.addResourceLocations("classpath:/META-INF/resources/webjars/cloud-admin-frontend/" + buildProperties.getVersion() + "/")
-				.setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
-		
+        // no caching for HTML pages
+        registry.addResourceHandler("*.html")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/cloud-admin-frontend/" + buildProperties.getVersion() + "/");
+        // the remaining stuff for 365 days
+        // apply custom config as needed
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/cloud-admin-frontend/" + buildProperties.getVersion() + "/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
+        
     }
     
-	/**
-	 * This is needed in case we have no index.html in the static folder.
-	 * In the JAR solution we don't even have the static folder ...
-	 */
-	@Override
-	public void addViewControllers(ViewControllerRegistry registry) {
-	    registry.addViewController("/").setViewName("forward:/index.html");
-	}
-	@RequestMapping(value = "/{[path:[^\\\\.]*}", method = RequestMethod.GET)
-	public String redirect() {
-		return "forward:/index.html";
-	}
+    /**
+     * This is needed in case we have no index.html in the static folder.
+     * In the JAR solution we don't even have the static folder ...
+     */
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:/index.html");
+    }
+    // /{[path:[^\\\\.]*}
+    @RequestMapping(value = "/{name:^(?!api).+}", method = RequestMethod.GET)
+    public String redirect() {
+        return "forward:/index.html";
+    }
 }

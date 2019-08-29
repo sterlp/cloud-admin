@@ -31,7 +31,7 @@ class ConnectorRegistry {
 
     @SuppressWarnings("rawtypes")
     private final ServiceLoader<ConnectorProvider> loader = ServiceLoader.load(ConnectorProvider.class);
-    private final Map<SystemId, SimpleConnector> activeConnectors = new HashMap<>();
+    private final Map<SystemId, SimpleConnector> activeConnectors = new LinkedHashMap<>();
     private final Map<Class<SimpleConnector>, ConnectorProvider<?>> providers = new LinkedHashMap<>();
 
     @Autowired private SystemDAO systemDAO;
@@ -68,6 +68,9 @@ class ConnectorRegistry {
     
     Collection<Class<SimpleConnector>> getConnectors() {
         return providers.keySet();
+    }
+    Collection<ConnectorProvider<?>> getProviders() {
+        return providers.values();
     }
 
     SimpleConnector createConnector(ConnectorProvider<?> provider, SystemBE s) throws ConnectorException {

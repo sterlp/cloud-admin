@@ -1,8 +1,10 @@
 package org.sterl.cloudadmin.connector.example;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.sterl.cloudadmin.api.connector.ConfigMetaData;
 import org.sterl.cloudadmin.api.connector.ConnectorProvider;
 import org.sterl.cloudadmin.api.system.ExternalResourceId;
 import org.sterl.cloudadmin.api.system.System;
@@ -16,6 +18,12 @@ public class ExampleProvider implements ConnectorProvider<ExampleConnector> {
      * <li>name:type --> e.g. PERSONS:TABLE
      */
     public static final String RESOURCES_PROP = "RESOURCES";
+    
+    private static final List<ConfigMetaData> CONFIG_META =
+            Arrays.asList(
+                ConfigMetaData.builder().label("Permissions").property(PERMISSIONS_PROP).description("Comma separated list of supported permissions e.g.: READ, WRITE").build(),
+                ConfigMetaData.builder().label("Resources").property(RESOURCES_PROP).description("Comma separated list of supported resources (colon type is optional) e.g.: PERSONS:TABLE, ADDRESS:TABLE, SALARY:VIEW").build()
+            );
     
     @Override
     public ExampleConnector create(System system, SystemCredential credential) throws ConnectorException {
@@ -43,5 +51,15 @@ public class ExampleProvider implements ConnectorProvider<ExampleConnector> {
     @Override
     public Class<ExampleConnector> getClassName() {
         return ExampleConnector.class;
+    }
+
+    @Override
+    public String getName() {
+        return "Example in Memory Connector";
+    }
+
+    @Override
+    public List<ConfigMetaData> getConfigMeta() {
+        return CONFIG_META;
     }
 }
