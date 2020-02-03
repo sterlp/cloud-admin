@@ -25,7 +25,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,14 +46,12 @@ import org.sterl.cloudadmin.system.model.SystemCredentialBE;
 import org.sterl.cloudadmin.system.model.SystemPermissionBE;
 import org.sterl.cloudadmin.system.model.SystemResourceBE;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringBootTest()
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DataJpaTest()
-@Rollback(false)
 @Tag("IT")
-@TestMethodOrder(OrderAnnotation.class)
 @TestInstance(Lifecycle.PER_CLASS)
+@Rollback(false)
+@TestMethodOrder(OrderAnnotation.class)
 @Transactional(propagation= Propagation.NOT_SUPPORTED)
 public class SystemModelIT {
 

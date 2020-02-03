@@ -50,6 +50,7 @@ public class CloudAdminApplication implements WebMvcConfigurer {
      * This is needed in case we have no index.html in the static folder.
      * In the JAR solution we don't even have the static folder ...
      */
+    /*
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("forward:/index.html");
@@ -59,4 +60,5 @@ public class CloudAdminApplication implements WebMvcConfigurer {
     public String redirect() {
         return "forward:/index.html";
     }
+    */
 }
