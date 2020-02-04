@@ -1,11 +1,16 @@
 package org.sterl.cloudadmin.common.id.jpa;
 
+import org.hibernate.HibernateException;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.sterl.cloudadmin.common.id.Id;
 
 import lombok.Getter;
 
+/**
+ * Common class which support the conversion of {@link Id} types to their DB representations.
+ * In addition it supports parsing {@link Long} values from {@link String}s. 
+ */
 public abstract class AbstractIdTypeDescriptor<ValueType, IdType extends Id<ValueType>> extends AbstractTypeDescriptor<IdType> {
     
     @Getter private final IdJpaConverter<IdType, ValueType> converter;
@@ -28,19 +33,26 @@ public abstract class AbstractIdTypeDescriptor<ValueType, IdType extends Id<Valu
     @SuppressWarnings("unchecked")
     @Override
     public <X> X unwrap(IdType value, Class<X> type, WrapperOptions options) {
+        return (X)unwrapUnchecked(value, type);
+    }
+
+    /**
+     * @see #unwrap(Id, Class, WrapperOptions)
+     * @throws HibernateException if type is unknown
+     */
+    public Object unwrapUnchecked(IdType value, Class type) {
         if ( value == null || value.getValue() == null) {
             return null;
         }
         if ( getJavaType().isAssignableFrom( type ) ) {
-            return (X) value;
+            return value;
         }
         if ( valueClass.isAssignableFrom( type ) ) {
-            return (X) value.getValue();
+            return value.getValue();
         }
         if ( String.class.isAssignableFrom( type )) {
-            return (X) toString(value);
+            return toString(value);
         }
-
         throw unknownUnwrap( type );
     }
 

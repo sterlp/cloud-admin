@@ -12,8 +12,8 @@ import lombok.Getter;
 @SuppressWarnings("serial")
 @EqualsAndHashCode(of = "value")
 @JsonSerialize(using = IdSerializer.class)
-public  class AbstractId<T> implements Id<T> {
-    
+public abstract class AbstractId<T> implements Id<T> {
+
     @Getter
     protected final T value;
     

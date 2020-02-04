@@ -1,9 +1,10 @@
 package org.sterl.cloudadmin.identity.model.jpa;
 
-import org.hibernate.type.descriptor.java.LongTypeDescriptor;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.support.GenericConversionService;
 import org.sterl.cloudadmin.api.identity.IdentityId;
+import org.sterl.cloudadmin.common.id.GenericIdConverter;
 import org.sterl.cloudadmin.common.id.jpa.AbstractIdTypeDescriptor;
 import org.sterl.cloudadmin.common.id.jpa.AbstractLongIdType;
 import org.sterl.cloudadmin.common.id.jpa.IdJpaConverter;
@@ -11,10 +12,9 @@ import org.sterl.cloudadmin.common.id.jpa.IdJpaConverter;
 @SuppressWarnings("serial")
 @Configuration
 public class HibernateIdentityConverters {
-
-    @Bean
-    public IdentityIdConverter identityIdConverter() {
-        return IdentityIdConverter.INSTANCE;
+    @Autowired
+    void configure(GenericConversionService defaultConversionService) {
+        defaultConversionService.addConverter(new GenericIdConverter<>(IdentityIdTypeDescriptor.INSTANCE));
     }
     public static class IdentityIdConverter extends IdJpaConverter<IdentityId, Long> {
         public static final IdentityIdConverter INSTANCE = new IdentityIdConverter();

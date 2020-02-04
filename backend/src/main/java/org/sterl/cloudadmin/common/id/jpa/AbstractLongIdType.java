@@ -23,6 +23,7 @@ public abstract class AbstractLongIdType<IdType extends AbstractId<Long>> extend
 
     @Getter
     private final IdType nullValue;
+    @Getter
     private final AbstractIdTypeDescriptor<Long, IdType> typeDescriptor;
 
     public AbstractLongIdType(AbstractIdTypeDescriptor<Long, IdType> typeDescriptor) {
