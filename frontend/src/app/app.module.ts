@@ -8,6 +8,7 @@ import { ToggleDirective } from './dashboard/sidebar/toggle.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HomePage } from './home/pages/home.page';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { HomePage } from './home/pages/home.page';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [{
     provide: LocationStrategy,

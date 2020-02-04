@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Page, HateosEntityList, Pageable, HateosResourceLinks } from '@sterlp/ng-spring-boot-api';
+import { Page, HateosEntityList, Pageable, HateosResourceLinks, EMPTY_PAGE } from '@sterlp/ng-spring-boot-api';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IdentityList } from '../../api/identity-api.model';
+import { IdentityService, IdentityDataSource } from '../../service/identity.service';
 
 @Component({
   selector: 'app-identities-list',
@@ -11,23 +12,13 @@ import { IdentityList } from '../../api/identity-api.model';
 // tslint:disable-next-line: component-class-suffix
 export class IdentitiesListPage implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  constructor(private identityService: IdentityService) { }
+
+  identityDataSource: IdentityDataSource;
+  displayIdentityColumns: string[] = ['name', 'firstName'];
 
   ngOnInit() {
-    const q = new Pageable();
-    q.size = 5;
-    this.list(q).subscribe(r => {
-      console.info(r);
-      if (r.page.size > 0) {
-        console.info(r._embedded.identities[0]);
-      }
-    });
+    this.identityDataSource = new IdentityDataSource(this.identityService);
+    this.identityDataSource.load();
   }
-
-  list(pageable: Pageable): Observable<HateosEntityList<IdentityList, HateosResourceLinks>> {
-    return this.http.get<HateosEntityList<IdentityList, HateosResourceLinks>>('/api/identities', {
-      params: pageable ? pageable.newHttpParams() : null
-    });
-  }
-
 }

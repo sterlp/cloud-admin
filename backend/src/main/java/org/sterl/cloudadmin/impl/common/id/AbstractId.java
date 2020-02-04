@@ -26,7 +26,7 @@ public abstract class AbstractId<T> implements Id<T> {
     protected String toString;
     @Override
     public String toString() {
-        if (toString == null) toString = getClass().getSimpleName() + "(" + value + ")";
+        if (toString == null) toString = String.valueOf(value); // getClass().getSimpleName() + "(" + value + ")";
         return toString;
     }
 }

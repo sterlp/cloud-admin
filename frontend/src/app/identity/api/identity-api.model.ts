@@ -18,5 +18,5 @@ export interface Identity {
 }
 
 export enum AccountGenerationStrategy {
-    SAME_AS_IDENTITY_ID
+    SAME_AS_IDENTITY_ID = 'SAME_AS_IDENTITY_ID'
 }
