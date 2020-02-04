@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.sterl.cloudadmin.api.system.System;
 import org.sterl.cloudadmin.api.system.SystemCredential;
-import org.sterl.cloudadmin.connector.exception.ConnectorException;
+import org.sterl.cloudadmin.impl.connector.exception.ConnectorException;
 
 public interface ConnectorProvider<T extends SimpleConnector> {
 

@@ -9,7 +9,7 @@ import org.sterl.cloudadmin.api.system.SystemAccount;
 import org.sterl.cloudadmin.api.system.SystemPermission;
 import org.sterl.cloudadmin.api.system.SystemResource;
 import org.sterl.cloudadmin.api.system.SystemResourcePermissions;
-import org.sterl.cloudadmin.connector.exception.ConnectorException;
+import org.sterl.cloudadmin.impl.connector.exception.ConnectorException;
 
 /**
  * Minimal requirement to an connector.

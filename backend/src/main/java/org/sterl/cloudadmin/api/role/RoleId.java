@@ -2,7 +2,7 @@ package org.sterl.cloudadmin.api.role;
 
 import javax.validation.constraints.NotNull;
 
-import org.sterl.cloudadmin.common.id.AbstractId;
+import org.sterl.cloudadmin.impl.common.id.AbstractId;
 
 /**
  * A unique name for a given role in the system.

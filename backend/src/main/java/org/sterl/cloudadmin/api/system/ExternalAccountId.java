@@ -1,6 +1,6 @@
 package org.sterl.cloudadmin.api.system;
 
-import org.sterl.cloudadmin.common.id.AbstractId;
+import org.sterl.cloudadmin.impl.common.id.AbstractId;
 
 /**
  * Reference to one {@link SystemAccount} in an external system.
