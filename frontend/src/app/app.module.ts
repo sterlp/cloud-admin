@@ -1,52 +1,32 @@
-import { LayoutModule } from '@angular/cdk/layout';
-import { OverlayModule } from '@angular/cdk/overlay';
-import {
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatInputModule,
-    MatMenuModule
-} from '@angular/material';
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TopnavComponent } from './components/topnav/topnav.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { UsersComponent } from './pages/users/users.component';
-import { ConnectorsComponent } from './pages/connectors/connectors.component';
+import { HeaderComponent } from './dashboard/header/header.component';
+import { SidebarComponent } from './dashboard/sidebar/sidebar.component';
+import { ToggleDirective } from './dashboard/sidebar/toggle.directive';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { HomePage } from './home/pages/home.page';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    TopnavComponent,
+    HeaderComponent,
     SidebarComponent,
-    DashboardComponent,
-    UsersComponent,
-    ConnectorsComponent
+    ToggleDirective,
+    HomePage
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
-    LayoutModule,
-    OverlayModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatListModule,
+    AppRoutingModule
   ],
-  providers: [],
+  providers: [{
+    provide: LocationStrategy,
+    useClass: HashLocationStrategy
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
