@@ -19,6 +19,16 @@ export class IdentityService {
       params: pageable ? pageable.newHttpParams() : null
     });
   }
+  get(id: number | string): Observable<Identity> {
+    return this.http.get<Identity>(`${this.listUrl}/${id}`);
+  }
+  save(entity: Identity): Observable<Identity> {
+    if (entity.id) {
+      return this.http.put<Identity>(`${this.listUrl}/${entity.id}`, entity);
+    } else {
+      return this.http.post<Identity>(`${this.listUrl}`, entity);
+    }
+  }
 }
 
 export class IdentityDataSource implements DataSource<Identity> {

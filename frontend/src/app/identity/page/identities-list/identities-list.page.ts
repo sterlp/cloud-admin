@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Page, HateosEntityList, Pageable, HateosResourceLinks, EMPTY_PAGE } from '@sterlp/ng-spring-boot-api';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { IdentityList } from '../../api/identity-api.model';
+import { IdentityList, Identity, IdentityModel } from '../../api/identity-api.model';
 import { IdentityService, IdentityDataSource } from '../../service/identity.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-identities-list',
@@ -12,13 +10,18 @@ import { IdentityService, IdentityDataSource } from '../../service/identity.serv
 // tslint:disable-next-line: component-class-suffix
 export class IdentitiesListPage implements OnInit {
 
-  constructor(private identityService: IdentityService) { }
+  constructor(private identityService: IdentityService, private sanitizer: DomSanitizer) { }
 
   identityDataSource: IdentityDataSource;
-  displayIdentityColumns: string[] = ['name', 'firstName'];
+  readonly identityColumns = IdentityModel.COLUMNS;
+  readonly displayIdentityColumns: string[] = this.identityColumns.map(c => c.id);
 
   ngOnInit() {
+    this.displayIdentityColumns.push('actions');
     this.identityDataSource = new IdentityDataSource(this.identityService);
+    this.doLoad();
+  }
+  doLoad() {
     this.identityDataSource.load();
   }
 }

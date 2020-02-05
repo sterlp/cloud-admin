@@ -20,3 +20,12 @@ export interface Identity {
 export enum AccountGenerationStrategy {
     SAME_AS_IDENTITY_ID = 'SAME_AS_IDENTITY_ID'
 }
+
+export class IdentityModel {
+  static readonly COLUMNS = [
+    { id: 'name',       header: 'Login',        required: true,  type: 'text',  cell: (e: Identity) => e.name        },
+    { id: 'firstName',  header: 'First Name',   required: false, type: 'text',  cell: (e: Identity) => e.firstName   },
+    { id: 'lastName',   header: 'Last  Name',   required: false, type: 'text',  cell: (e: Identity) => e.lastName    },
+    { id: 'email',      header: 'Email',        required: false, type: 'email', cell: (e: Identity) => e.email       }
+  ];
+}

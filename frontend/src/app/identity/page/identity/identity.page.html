@@ -1,0 +1,26 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a routerLink="..">Identities</a></li>
+      <li class="breadcrumb-item active" aria-current="page"> {{ identity ? identity.name : 'Loading ...' }}</li>
+  </ol>
+</nav>
+
+<div class="container" >
+  <mat-card *ngIf="identity">
+    <mat-card-content>
+      <form>
+        <div class="row">
+          <mat-form-field *ngFor="let column of identityColumns" class="col-12">
+            <input matInput [name]="column.id" [placeholder]="column.header" [required]="column.required"
+                   [type]="column.type" [(ngModel)]="identity[column.id]" >
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button color="primary" (click)="doSave(true)">Save & Close</button>
+      <button mat-button color="primary" (click)="doSave(false)">Save</button>
+      <button mat-button routerLink="..">Cancel</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
