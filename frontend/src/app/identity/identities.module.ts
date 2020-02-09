@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedModule } from '../shared/shared.module';
 
 
 // https://angular.io/guide/feature-modules
@@ -32,7 +33,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatCardModule,
     MatButtonModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    SharedModule
   ]
 })
 export class IdentitiesModule { }

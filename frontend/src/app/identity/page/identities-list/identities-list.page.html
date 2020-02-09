@@ -13,6 +13,9 @@
 </nav>
 
 <div class="container-fluid">
+
+    <app-server-error [error]="serverError"></app-server-error>
+
   <mat-card>
     <mat-card-content>
       <table mat-table matSort [dataSource]="identityDataSource" style="width: 100%;">

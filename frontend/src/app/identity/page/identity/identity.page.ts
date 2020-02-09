@@ -4,7 +4,7 @@ import { IdentityService } from '../../service/identity.service';
 import { Identity, IdentityModel, AccountGenerationStrategy } from '../../api/identity-api.model';
 import { Location } from '@angular/common';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import { SpringErrorWrapper } from 'src/app/shared/spring/spring-error.model';
+import { SpringErrorWrapper } from 'src/app/shared/spring/api/spring-error.model';
 
 @Component({
   selector: 'app-identity',

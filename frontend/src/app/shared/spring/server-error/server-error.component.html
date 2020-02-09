@@ -1,0 +1,5 @@
+<div *ngIf="error.hasError && !error.hasValidationErrors" class="alert"
+    [ngClass]="{'alert-danger': error.details.status > 499, 'alert-warning': error.details.status > 299}"
+    role="alert">
+    <strong>Failed with {{ error.details.status }}:</strong> {{ error.details.error }} {{ error.details.path }}
+</div>

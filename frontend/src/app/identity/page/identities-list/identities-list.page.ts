@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { MatSort } from '@angular/material/sort';
 import { of } from 'rxjs';
+import { SpringErrorWrapper } from 'src/app/shared/spring/api/spring-error.model';
 
 @Component({
   selector: 'app-identities-list',
@@ -19,12 +20,16 @@ export class IdentitiesListPage implements OnInit, AfterViewInit {
     constructor(private identityService: IdentityService, private sanitizer: DomSanitizer) { }
 
     identityDataSource: IdentityDataSource;
+    readonly serverError = new SpringErrorWrapper();
     readonly identityColumns = IdentityModel.COLUMNS;
     readonly displayIdentityColumns: string[] = this.identityColumns.map(c => c.id);
 
     ngOnInit() {
         this.displayIdentityColumns.push('actions');
-        this.identityDataSource = new IdentityDataSource(this.identityService);
+        this.identityDataSource = new IdentityDataSource(this.identityService, (o, e) => {
+            this.serverError.init(e);
+            return [] as any;
+        });
 
         this.paginator.page.subscribe(this.identityDataSource.doPage.bind(this.identityDataSource));
         this.sort.sortChange.subscribe(this.identityDataSource.doSortBy.bind(this.identityDataSource));

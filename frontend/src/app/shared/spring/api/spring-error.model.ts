@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
+
 export interface SpringErrorResult {
     timestamp: string;
     status: number;
@@ -6,7 +8,12 @@ export interface SpringErrorResult {
     message: string;
     path: string;
 }
-
+/**
+ * We consider everything a SpringErrorResult if it has error, status and timestamp.
+ */
+export function isSpringErrorResult(object: any): object is SpringErrorResult {
+    return object && object.error && object.status && object.timestamp;
+}
 /**
  * Spring representation of a validation constrain error
  */
@@ -33,8 +40,14 @@ export class SpringErrorWrapper {
     private _error: SpringErrorResult;
     private _validationErrors = new Map<string, BindingError>();
 
-    get hasValidationErrors() {
+    get hasValidationErrors(): boolean {
         return this._validationErrors.size > 0;
+    }
+    get hasError(): boolean {
+        return this._error && this._error.status > 299;
+    }
+    get details(): SpringErrorResult {
+        return this._error;
     }
 
     public static of(springError: SpringErrorResult | any): SpringErrorWrapper {
@@ -44,7 +57,12 @@ export class SpringErrorWrapper {
     }
     init(springError: SpringErrorResult | any) {
         this.clear();
-        this._error = springError;
+        if (springError instanceof HttpErrorResponse && isSpringErrorResult(springError.error)) {
+            this._error = springError.error;
+        } else {
+            this._error = springError;
+        }
+
         if (this._error && this._error.status > 399 && Array.isArray(this._error.errors)) {
             this._error.errors.forEach(error => {
                 if (isBindingError(error)) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Pageable, HateosEntityList, HateosResourceLinks, Sort } from '@sterlp/ng-spring-boot-api';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { catchError, map, tap, finalize } from 'rxjs/operators';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { IdentityList, Identity } from '../api/identity-api.model';
@@ -11,7 +11,7 @@ import { IdentityList, Identity } from '../api/identity-api.model';
 })
 export class IdentityService {
 
-    private listUrl = '/api/identity';
+    private listUrl = '/api/identities';
 
     constructor(private http: HttpClient) { }
 
@@ -46,16 +46,14 @@ export type ErrorHandler = (operation: string, error: any) => Observable<any>;
 
 export class IdentityDataSource implements DataSource<Identity> {
 
-    constructor(private identityService: IdentityService, errorHandler?: ErrorHandler) {}
+    constructor(private identityService: IdentityService, private errorHandler?: ErrorHandler) {}
 
     // tslint:disable: variable-name
+    private _lastRequest: Subscription;
     private _page = new Pageable();
-    private errorHandler: ErrorHandler;
-
     get page(): Pageable {
         return this._page;
     }
-
     private dataSubject = new BehaviorSubject<Identity[]>([]);
     private hateosSubject = new BehaviorSubject<HateosEntityList<IdentityList, HateosResourceLinks>>(null);
     public hateosSubject$ = this.hateosSubject.asObservable();
@@ -67,7 +65,6 @@ export class IdentityDataSource implements DataSource<Identity> {
     disconnect(collectionViewer: CollectionViewer): void {
         this.dataSubject.complete();
         this.hateosSubject.complete();
-        console.info('datasource disconnect ...');
     }
 
     doLoad(page: number = Pageable.DEFAULT_PAGE, size: number = Pageable.DEFAULT_SIZE): void {
@@ -108,9 +105,17 @@ export class IdentityDataSource implements DataSource<Identity> {
      * Requests the data using the actual page.
      */
     private _loadData() {
-        const req = this.identityService.list(this._page);
-        // tslint:disable-next-line: curly
-        if (this.errorHandler) req.pipe(catchError(e => this.errorHandler('loadData', e)));
-        req.subscribe(data => this.setData(data));
+        if (this._lastRequest) { // cancel any pending requests ...
+            this._lastRequest.unsubscribe();
+        }
+        this._lastRequest = this.identityService.list(this._page)
+            .subscribe(
+                result => this.setData(result),
+                e => this.errorHandler ? this.errorHandler('loadData', e) : null,
+                () => {
+                    this._lastRequest.unsubscribe();
+                    this._lastRequest = null;
+                }
+            );
     }
 }
