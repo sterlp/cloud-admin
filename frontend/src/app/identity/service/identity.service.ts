@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Pageable, HateosEntityList, HateosResourceLinks } from '@sterlp/ng-spring-boot-api';
+import { Pageable, HateosEntityList, HateosResourceLinks, Sort } from '@sterlp/ng-spring-boot-api';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { IdentityList, Identity } from '../api/identity-api.model';
@@ -10,7 +10,7 @@ import { IdentityList, Identity } from '../api/identity-api.model';
 })
 export class IdentityService {
 
-  private listUrl = '/api/identities';
+  private listUrl = '/api/identity';
 
   constructor(private http: HttpClient) { }
 
@@ -30,34 +30,81 @@ export class IdentityService {
     }
   }
 }
+/**
+ * Default page request interface, like from Anular Material Paginator
+ * https://material.angular.io/components/paginator/overview
+ */
+export interface PageRequest {
+  /** the page to show, starting with 0 */
+  pageIndex: number;
+  /** the number of elements to show */
+  pageSize: number;
+}
 
 export class IdentityDataSource implements DataSource<Identity> {
 
-  constructor(private identityService: IdentityService) {}
+    constructor(private identityService: IdentityService) {}
 
-  private dataSubject = new BehaviorSubject<Identity[]>([]);
-  private hateosSubject = new BehaviorSubject<HateosEntityList<IdentityList, HateosResourceLinks>>(null);
+    // tslint:disable-next-line: variable-name
+    private _page = new Pageable();
+        get page(): Pageable {
+        return this._page;
+    }
 
-  public hateosSubject$ = this.hateosSubject.asObservable();
+    private dataSubject = new BehaviorSubject<Identity[]>([]);
+    private hateosSubject = new BehaviorSubject<HateosEntityList<IdentityList, HateosResourceLinks>>(null);
+    public hateosSubject$ = this.hateosSubject.asObservable();
 
-  connect(collectionViewer: CollectionViewer): Observable<Identity[] | readonly Identity[]> {
-    return this.dataSubject.asObservable();
-  }
+    connect(collectionViewer: CollectionViewer): Observable<Identity[] | readonly Identity[]> {
+        return this.dataSubject.asObservable();
+    }
 
-  disconnect(collectionViewer: CollectionViewer): void {
-    this.dataSubject.complete();
-    this.hateosSubject.complete();
-  }
+    disconnect(collectionViewer: CollectionViewer): void {
+        this.dataSubject.complete();
+        this.hateosSubject.complete();
+    }
 
-  load(page: number = 0, size: number = 10): void {
-    console.info('loadConnectorData ...');
-    this.identityService.list(Pageable.of(page, size))
-      // .pipe(finalize(() => this.$loading.finishedLoading()))
-      .subscribe(data => this.setData(data));
-  }
+    doLoad(page: number = Pageable.DEFAULT_PAGE, size: number = Pageable.DEFAULT_SIZE): void {
+        this._page.size = size;
+        this._page.page = page;
+        this._loadData();
+    }
 
-  setData(data: HateosEntityList<IdentityList, HateosResourceLinks>) {
-    this.hateosSubject.next(data);
-    this.dataSubject.next(data._embedded ? data._embedded.identities : []);
-  }
+    doPage(page: PageRequest | Pageable | any): void {
+        if (page) {
+            if (page instanceof  Pageable) {
+                console.info('Pageable load ...', this._page);
+                this._page = page;
+            } else {
+                this._page.page = page.pageIndex || page.index || page.page || Pageable.DEFAULT_PAGE;
+                this._page.size = page.pageSize || page.size || Pageable.DEFAULT_SIZE;
+                console.info('compatibility load ...', this._page);
+            }
+            this._loadData();
+        } else {
+            throw new TypeError('Given page is null.');
+        }
+    }
+
+    doSortBy(sort: Sort | any) {
+        if (sort) {
+            this._page.setSort(sort.field || sort.active,
+                sort.direction);
+            this._loadData();
+        }
+    }
+
+    setData(data: HateosEntityList<IdentityList, HateosResourceLinks>) {
+        this.hateosSubject.next(data);
+        this.dataSubject.next(data._embedded ? data._embedded.identities : []);
+    }
+
+    /**
+     * Requests the data using the actual page.
+     */
+    private _loadData() {
+        this.identityService.list(this._page)
+            // .pipe(finalize(() => this.$loading.finishedLoading()))
+            .subscribe(data => this.setData(data));
+    }
 }

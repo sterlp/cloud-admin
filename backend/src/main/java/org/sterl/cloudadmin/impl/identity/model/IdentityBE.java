@@ -41,7 +41,7 @@ public class IdentityBE {
     /**
      * The unique name of this identity in the system
      */
-    @NotNull @Size(min = 1, max = 1024)
+    @NotNull @Size(min = 2, max = 1024)
     private String name;
     
     @Size(max = 64)

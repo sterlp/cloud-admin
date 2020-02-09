@@ -1,4 +1,4 @@
-package org.sterl.cloudadmin.impl;
+package org.sterl.cloudadmin.impl.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;

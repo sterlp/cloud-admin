@@ -7,12 +7,13 @@ import { IdentityPage } from './page/identity/identity.page';
 
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
+import { MatSortModule, MatSortHeader } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 
 // https://angular.io/guide/feature-modules
@@ -29,7 +30,9 @@ import { MatButtonModule } from '@angular/material/button';
     MatTooltipModule,
     MatInputModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatPaginatorModule,
+    MatSortModule
   ]
 })
 export class IdentitiesModule { }
