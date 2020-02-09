@@ -13,6 +13,9 @@
           <mat-form-field *ngFor="let column of identityColumns" class="col-12">
             <input matInput [name]="column.id" [placeholder]="column.header" [required]="column.required"
                    [type]="column.type" [(ngModel)]="identity[column.id]" >
+            <mat-hint class="hint-error" *ngIf="serverError.hasBindingError(column.id)">
+                {{ serverError.getBindingError(column.id)?.defaultMessage }}
+            </mat-hint>
           </mat-form-field>
         </div>
       </form>

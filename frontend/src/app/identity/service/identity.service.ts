@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Pageable, HateosEntityList, HateosResourceLinks, Sort } from '@sterlp/ng-spring-boot-api';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { catchError, map, tap, finalize } from 'rxjs/operators';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { IdentityList, Identity } from '../api/identity-api.model';
 
@@ -10,25 +11,25 @@ import { IdentityList, Identity } from '../api/identity-api.model';
 })
 export class IdentityService {
 
-  private listUrl = '/api/identity';
+    private listUrl = '/api/identity';
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { }
 
-  list(pageable: Pageable): Observable<HateosEntityList<IdentityList, HateosResourceLinks>> {
-    return this.http.get<HateosEntityList<IdentityList, HateosResourceLinks>>(this.listUrl, {
-      params: pageable ? pageable.newHttpParams() : null
-    });
-  }
-  get(id: number | string): Observable<Identity> {
-    return this.http.get<Identity>(`${this.listUrl}/${id}`);
-  }
-  save(entity: Identity): Observable<Identity> {
-    if (entity.id) {
-      return this.http.put<Identity>(`${this.listUrl}/${entity.id}`, entity);
-    } else {
-      return this.http.post<Identity>(`${this.listUrl}`, entity);
+    list(pageable: Pageable): Observable<HateosEntityList<IdentityList, HateosResourceLinks>> {
+        return this.http.get<HateosEntityList<IdentityList, HateosResourceLinks>>(this.listUrl, {
+            params: pageable ? pageable.newHttpParams() : null
+        });
     }
-  }
+    get(id: number | string): Observable<Identity> {
+        return this.http.get<Identity>(`${this.listUrl}/${id}`);
+    }
+    save(entity: Identity): Observable<Identity> {
+        if (entity.id) {
+            return this.http.put<Identity>(`${this.listUrl}/${entity.id}`, entity);
+        } else {
+            return this.http.post<Identity>(`${this.listUrl}`, entity);
+        }
+    }
 }
 /**
  * Default page request interface, like from Anular Material Paginator
@@ -41,13 +42,17 @@ export interface PageRequest {
   pageSize: number;
 }
 
+export type ErrorHandler = (operation: string, error: any) => Observable<any>;
+
 export class IdentityDataSource implements DataSource<Identity> {
 
-    constructor(private identityService: IdentityService) {}
+    constructor(private identityService: IdentityService, errorHandler?: ErrorHandler) {}
 
-    // tslint:disable-next-line: variable-name
+    // tslint:disable: variable-name
     private _page = new Pageable();
-        get page(): Pageable {
+    private errorHandler: ErrorHandler;
+
+    get page(): Pageable {
         return this._page;
     }
 
@@ -62,6 +67,7 @@ export class IdentityDataSource implements DataSource<Identity> {
     disconnect(collectionViewer: CollectionViewer): void {
         this.dataSubject.complete();
         this.hateosSubject.complete();
+        console.info('datasource disconnect ...');
     }
 
     doLoad(page: number = Pageable.DEFAULT_PAGE, size: number = Pageable.DEFAULT_SIZE): void {
@@ -88,8 +94,7 @@ export class IdentityDataSource implements DataSource<Identity> {
 
     doSortBy(sort: Sort | any) {
         if (sort) {
-            this._page.setSort(sort.field || sort.active,
-                sort.direction);
+            this._page.setSort(sort.field || sort.active, sort.direction);
             this._loadData();
         }
     }
@@ -103,8 +108,9 @@ export class IdentityDataSource implements DataSource<Identity> {
      * Requests the data using the actual page.
      */
     private _loadData() {
-        this.identityService.list(this._page)
-            // .pipe(finalize(() => this.$loading.finishedLoading()))
-            .subscribe(data => this.setData(data));
+        const req = this.identityService.list(this._page);
+        // tslint:disable-next-line: curly
+        if (this.errorHandler) req.pipe(catchError(e => this.errorHandler('loadData', e)));
+        req.subscribe(data => this.setData(data));
     }
 }

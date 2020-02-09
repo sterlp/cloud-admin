@@ -4,6 +4,7 @@ import { IdentityService } from '../../service/identity.service';
 import { Identity, IdentityModel, AccountGenerationStrategy } from '../../api/identity-api.model';
 import { Location } from '@angular/common';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import { SpringErrorWrapper } from 'src/app/shared/spring/spring-error.model';
 
 @Component({
   selector: 'app-identity',
@@ -19,6 +20,7 @@ export class IdentityPage implements OnInit {
 
   identity: Identity;
   readonly identityColumns = IdentityModel.COLUMNS;
+  readonly serverError = new SpringErrorWrapper();
 
   identityForm = new FormControl('', [
     Validators.required,
@@ -38,15 +40,20 @@ export class IdentityPage implements OnInit {
     );
   }
 
-  doLoad(id: number) {
-    this.identityService.get(id).subscribe(r => this.identity = r);
-  }
-  doSave(close: boolean) {
-    this.identityService.save(this.identity).subscribe(r => {
-      this.identity = r;
-      if (close) {
-        this.location.back();
-      }
-    });
-  }
+    doLoad(id: number) {
+        this.serverError.clear();
+        this.identityService.get(id).subscribe(r => this.identity = r);
+    }
+    doSave(close: boolean) {
+        this.serverError.clear();
+        this.identityService.save(this.identity).subscribe(r => {
+                this.identity = r;
+                if (close) {
+                this.location.back();
+            }
+        },
+        e => {
+            this.serverError.init(e.error || e);
+        });
+    }
 }

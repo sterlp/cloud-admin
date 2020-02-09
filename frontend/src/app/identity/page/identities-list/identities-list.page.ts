@@ -5,6 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatPaginator } from '@angular/material/paginator';
 import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { MatSort } from '@angular/material/sort';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-identities-list',
