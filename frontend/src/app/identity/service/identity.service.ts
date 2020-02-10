@@ -36,10 +36,10 @@ export class IdentityService {
  * https://material.angular.io/components/paginator/overview
  */
 export interface PageRequest {
-  /** the page to show, starting with 0 */
-  pageIndex: number;
-  /** the number of elements to show */
-  pageSize: number;
+    /** the page to show, starting with 0 */
+    pageIndex: number;
+    /** the number of elements to show */
+    pageSize: number;
 }
 
 export type ErrorHandler = (operation: string, error: any) => Observable<any>;
@@ -50,6 +50,10 @@ export class IdentityDataSource implements DataSource<Identity> {
 
     // tslint:disable: variable-name
     private _lastRequest: Subscription;
+    // tslint:disable-next-line: variable-name
+    private _loading = new BehaviorSubject<boolean>(false);
+    public readonly loading$ = this._loading.asObservable();
+
     private _page = new Pageable();
     get page(): Pageable {
         return this._page;
@@ -65,6 +69,7 @@ export class IdentityDataSource implements DataSource<Identity> {
     disconnect(collectionViewer: CollectionViewer): void {
         this.dataSubject.complete();
         this.hateosSubject.complete();
+        this._loading.complete();
     }
 
     doLoad(page: number = Pageable.DEFAULT_PAGE, size: number = Pageable.DEFAULT_SIZE): void {
@@ -108,11 +113,13 @@ export class IdentityDataSource implements DataSource<Identity> {
         if (this._lastRequest) { // cancel any pending requests ...
             this._lastRequest.unsubscribe();
         }
+        this._loading.next(true);
         this._lastRequest = this.identityService.list(this._page)
             .subscribe(
                 result => this.setData(result),
                 e => this.errorHandler ? this.errorHandler('loadData', e) : null,
                 () => {
+                    this._loading.next(false);
                     this._lastRequest.unsubscribe();
                     this._lastRequest = null;
                 }
