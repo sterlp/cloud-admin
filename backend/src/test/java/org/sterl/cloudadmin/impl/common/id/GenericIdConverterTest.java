@@ -10,13 +10,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.core.convert.TypeDescriptor;
 import org.sterl.cloudadmin.api.identity.IdentityId;
-import org.sterl.cloudadmin.impl.common.id.GenericIdConverter;
-import org.sterl.cloudadmin.impl.identity.model.jpa.HibernateIdentityConverters.IdentityIdTypeDescriptor;
+import org.sterl.cloudadmin.impl.identity.model.jpa.HibernateIdentityConverters.IdentityIdType;
 
 @Execution(ExecutionMode.CONCURRENT) // https://www.swtestacademy.com/junit5-parallel-test-execution/
 class GenericIdConverterTest {
     
-    final GenericIdConverter<IdentityId, Long> subject = new GenericIdConverter<>(IdentityIdTypeDescriptor.INSTANCE);
+    final GenericIdConverter<IdentityId, Long> subject = new GenericIdConverter<>(IdentityIdType.INSTANCE);
     final static IdentityId ONE = new IdentityId(1L);
     
     /**

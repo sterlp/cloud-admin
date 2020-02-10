@@ -1,16 +1,18 @@
 package org.sterl.cloudadmin.impl.common.id;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
-import org.sterl.cloudadmin.impl.common.id.jpa.AbstractIdTypeDescriptor;
+import org.sterl.cloudadmin.impl.common.id.jpa.AbstractIdType;
+import org.sterl.cloudadmin.impl.common.id.jpa.IdTypeDescriptor;
 
 /**
- * Converts the {@link Id} using its given JPA {@link AbstractIdTypeDescriptor} from
+ * Converts the {@link Id} using its given JPA {@link IdTypeDescriptor} from
  * any supported type to the destination type for Spring.
  * 
  * Supports also toString representations like SimpleClassName(value)
@@ -23,7 +25,7 @@ public class GenericIdConverter<IdType extends Id<ValueType>, ValueType> impleme
     private static final Map<Class<?>, TypeDescriptor> typeDescriptorCache = new HashMap<>(32);
     private static final TypeDescriptor STRING_TYPE;
     
-    private final AbstractIdTypeDescriptor<ValueType, IdType> type;
+    private final IdTypeDescriptor<ValueType, IdType> type;
     private final Set<ConvertiblePair> converting;
     private final TypeDescriptor valueType;
     private final TypeDescriptor idType;
@@ -44,18 +46,25 @@ public class GenericIdConverter<IdType extends Id<ValueType>, ValueType> impleme
         return result;
     }
     
-    public GenericIdConverter(AbstractIdTypeDescriptor<ValueType, IdType> type) {
+    public GenericIdConverter(AbstractIdType<ValueType, IdType> type) {
+        this(type.getTypeDescriptor());
+    }
+    
+    public GenericIdConverter(IdTypeDescriptor<ValueType, IdType> type) {
         this.type = type;
         this.valueType = getTypeDescriptor(type.getValueClass());
         this.idType = getTypeDescriptor(type.getJavaType());
         this.toStringPrefix = type.getJavaType().getSimpleName() + "(";
-        this.converting = Set.of(
-            new ConvertiblePair(type.getValueClass(), type.getJavaType()),
-            new ConvertiblePair(type.getJavaType(), type.getValueClass()),
-            
-            new ConvertiblePair(String.class, type.getJavaType()),
-            new ConvertiblePair(type.getJavaType(), String.class)
-        );
+        
+        Set<ConvertiblePair> elements = new LinkedHashSet<>();
+        elements.add(new ConvertiblePair(type.getValueClass(), type.getJavaType()));
+        elements.add(new ConvertiblePair(type.getJavaType(), type.getValueClass()));
+        // support also String
+        if (!type.getValueClass().isAssignableFrom(String.class)) {
+            elements.add(new ConvertiblePair(String.class, type.getJavaType()));
+            elements.add(new ConvertiblePair(type.getJavaType(), String.class));
+        }
+        this.converting = Set.copyOf(elements);
     }
     
     @Override

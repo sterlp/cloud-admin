@@ -4,6 +4,7 @@ import org.hibernate.boot.SessionFactoryBuilder;
 import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.boot.spi.SessionFactoryBuilderFactory;
 import org.hibernate.boot.spi.SessionFactoryBuilderImplementor;
+import org.hibernate.type.TypeResolver;
 import org.sterl.cloudadmin.impl.identity.model.jpa.HibernateIdentityConverters;
 import org.sterl.cloudadmin.impl.role.model.jpa.HibernateRoleConverters.RoleIdType;
 import org.sterl.cloudadmin.impl.system.model.jpa.HibernateConverters.ExternalPermissionIdType;
@@ -18,16 +19,17 @@ public class HibernateDataTypesRegistration implements SessionFactoryBuilderFact
     @SuppressWarnings("deprecation")
     @Override
     public SessionFactoryBuilder getSessionFactoryBuilder(final MetadataImplementor metadata, final SessionFactoryBuilderImplementor defaultBuilder) {
-        metadata.getTypeResolver().registerTypeOverride(SystemIdType.INSTANCE);
-        metadata.getTypeResolver().registerTypeOverride(SystemCredentialIdType.INSTANCE);
-        metadata.getTypeResolver().registerTypeOverride(SystemResourceIdType.INSTANCE);
-        metadata.getTypeResolver().registerTypeOverride(SystemPermissionIdType.INSTANCE);
-        metadata.getTypeResolver().registerTypeOverride(SystemAccountIdType.INSTANCE);
-        metadata.getTypeResolver().registerTypeOverride(ExternalPermissionIdType.INSTANCE);
+        final TypeResolver typeResolver = metadata.getTypeResolver();
+        typeResolver.registerTypeOverride(SystemIdType.INSTANCE);
+        typeResolver.registerTypeOverride(SystemCredentialIdType.INSTANCE);
+        typeResolver.registerTypeOverride(SystemResourceIdType.INSTANCE);
+        typeResolver.registerTypeOverride(SystemPermissionIdType.INSTANCE);
+        typeResolver.registerTypeOverride(SystemAccountIdType.INSTANCE);
+        typeResolver.registerTypeOverride(ExternalPermissionIdType.INSTANCE);
         
         // TODO move me
-        metadata.getTypeResolver().registerTypeOverride(RoleIdType.INSTANCE);
-        metadata.getTypeResolver().registerTypeOverride(HibernateIdentityConverters.IdentityIdType.INSTANCE);
+        typeResolver.registerTypeOverride(RoleIdType.INSTANCE);
+        typeResolver.registerTypeOverride(HibernateIdentityConverters.IdentityIdType.INSTANCE);
         return defaultBuilder;
     }
 }

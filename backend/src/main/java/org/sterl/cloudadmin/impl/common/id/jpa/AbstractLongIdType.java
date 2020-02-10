@@ -14,6 +14,8 @@ import lombok.Getter;
 public abstract class AbstractLongIdType<IdType extends AbstractId<Long>> extends AbstractIdType<Long, IdType> 
     implements DiscriminatorType<IdType>, VersionType<IdType> {
     
+    private static final long serialVersionUID = -5379870621943669892L;
+
     private final Comparator<IdType> comperator = new Comparator<IdType>() {
         @Override
         public int compare(IdType o1, IdType o2) {
@@ -24,9 +26,9 @@ public abstract class AbstractLongIdType<IdType extends AbstractId<Long>> extend
     @Getter
     private final IdType nullValue;
     @Getter
-    private final AbstractIdTypeDescriptor<Long, IdType> typeDescriptor;
+    private final IdTypeDescriptor<Long, IdType> typeDescriptor;
 
-    public AbstractLongIdType(AbstractIdTypeDescriptor<Long, IdType> typeDescriptor) {
+    public AbstractLongIdType(IdTypeDescriptor<Long, IdType> typeDescriptor) {
         super(BigIntTypeDescriptor.INSTANCE, typeDescriptor);
         this.typeDescriptor = typeDescriptor;
         this.nullValue = this.typeDescriptor.getConverter().convert(0L);

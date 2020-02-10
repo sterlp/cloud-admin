@@ -5,16 +5,19 @@ import java.io.Serializable;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.PrimitiveType;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 import org.sterl.cloudadmin.impl.common.id.Id;
+
+import lombok.Getter;
 
 public abstract class AbstractIdType<ValueType, IdType extends Id<ValueType>> extends AbstractSingleColumnStandardBasicType<IdType> 
     implements PrimitiveType<IdType> {
     
-    private final JavaTypeDescriptor<IdType> typeDescriptor;
+    private static final long serialVersionUID = 6535464609505890290L;
+    @Getter
+    private final IdTypeDescriptor<ValueType, IdType> typeDescriptor;
 
-    public AbstractIdType(SqlTypeDescriptor sqlTypeDescriptor, JavaTypeDescriptor<IdType> javaTypeDescriptor) {
+    public AbstractIdType(SqlTypeDescriptor sqlTypeDescriptor, IdTypeDescriptor<ValueType, IdType> javaTypeDescriptor) {
         super(sqlTypeDescriptor, javaTypeDescriptor);
         this.typeDescriptor = javaTypeDescriptor;
     }
