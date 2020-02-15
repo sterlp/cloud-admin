@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication
 @Controller
 @EnableTransactionManagement // basically not needed anymore ...
+// https://github.com/spring-projects/spring-boot/issues/15383
+// @EnableSpringDataWebSupport // https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#core.web.type-safe
 public class CloudAdminApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {

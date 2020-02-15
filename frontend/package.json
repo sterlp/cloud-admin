@@ -24,7 +24,7 @@
     "@coreui/angular": "2.7.5",
     "@coreui/coreui": "^2.1.16",
     "@coreui/icons": "^0.3.0",
-    "@sterlp/ng-spring-boot-api": "^0.0.2",
+    "@sterlp/ng-spring-boot-api": "^0.0.3",
     "simple-line-icons": "^2.4.1",
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",

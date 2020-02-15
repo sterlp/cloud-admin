@@ -1,11 +1,17 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Pageable } from '@sterlp/ng-spring-boot-api';
 import { Observable } from 'rxjs';
 
+/**
+ * Simple abstract class build for a Spring REST service.
+ * @export
+ * @abstract
+ * @template ListType the interface type returned for a list
+ * @template ResourceType the interface type returned for a get
+ */
 export abstract class SpringResoureceService<ListType, ResourceType>  {
 
-    constructor(private http: HttpClient) { }
+    constructor(protected http: HttpClient) { }
 
     /**
      * Return the URL which should be used to read a set of resources from the backend.

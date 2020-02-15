@@ -30,6 +30,7 @@ java -jar backend/target/backend-0.1.0-SNAPSHOT.jar
 ```
 
 # Links
+- https://docs.spring.io/spring-data/rest/docs/current/reference/html/#reference
 - https://angular.io/guide/quickstart
 - https://ng-bootstrap.github.io
 - https://material.angular.io/components/categories
