@@ -7,6 +7,7 @@ import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { MatSort } from '@angular/material/sort';
 import { of } from 'rxjs';
 import { SpringErrorWrapper } from 'src/app/shared/spring/api/spring-error.model';
+import { PageRequest, Pageable } from '@sterlp/ng-spring-boot-api';
 
 @Component({
   selector: 'app-identities-list',
@@ -20,16 +21,18 @@ export class IdentitiesListPage implements OnInit, AfterViewInit {
     constructor(private identityService: IdentityService, private sanitizer: DomSanitizer) { }
 
     identityDataSource: IdentityDataSource;
+    filter: string;
+
     readonly serverError = new SpringErrorWrapper();
     readonly identityColumns = IdentityModel.COLUMNS;
     readonly displayIdentityColumns: string[] = this.identityColumns.map(c => c.id);
 
     ngOnInit() {
         this.displayIdentityColumns.push('actions');
-        this.identityDataSource = new IdentityDataSource(this.identityService, (o, e) => {
+        this.identityDataSource = new IdentityDataSource(this.identityService, (e) => {
             this.serverError.init(e);
-            return [] as any;
-        });
+            return of(this.identityDataSource.value);
+        }, this._filterHook.bind(this));
 
         this.paginator.page.subscribe(this.identityDataSource.doPage.bind(this.identityDataSource));
         this.sort.sortChange.subscribe(this.identityDataSource.doSortBy.bind(this.identityDataSource));
@@ -43,5 +46,11 @@ export class IdentitiesListPage implements OnInit, AfterViewInit {
     }
     doLoad() {
         this.identityDataSource.doLoad();
+    }
+
+    // tslint:disable: curly
+    private _filterHook(identityService: IdentityService, page: Pageable) {
+        if (this.filter) return identityService.search(this.filter, page);
+        else return null;
     }
 }

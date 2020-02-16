@@ -15,7 +15,7 @@ export function isSpringErrorResult(object: any): object is SpringErrorResult {
     return object && object.error && object.status && object.timestamp;
 }
 /**
- * Spring representation of a validation constrain error
+ * Spring representation of a validation constrain error.
  */
 export interface BindingError {
     codes?: Array<string>;
