@@ -13,7 +13,7 @@ import { PageRequest, Pageable } from '@sterlp/ng-spring-boot-api';
   selector: 'app-identities-list',
   templateUrl: './identities-list.page.html'
 })
-// tslint:disable-next-line: component-class-suffix
+// tslint:disable: component-class-suffix curly
 export class IdentitiesListPage implements OnInit, AfterViewInit {
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
     @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -48,7 +48,6 @@ export class IdentitiesListPage implements OnInit, AfterViewInit {
         this.identityDataSource.doLoad();
     }
 
-    // tslint:disable: curly
     private _filterHook(identityService: IdentityService, page: Pageable) {
         if (this.filter) return identityService.search(this.filter, page);
         else return null;

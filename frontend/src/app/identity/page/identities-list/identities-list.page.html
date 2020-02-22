@@ -23,7 +23,7 @@
                 <div class="flex-grow-1 mr-1">
                     <mat-form-field style="width: 100%">
                         <mat-label><mat-icon matPrefix>search</mat-icon> Search ...</mat-label>
-                        <input matInput [(ngModel)]="filter" (keyup.enter)="doLoad()">
+                        <input matInput [(ngModel)]="filter" (keyup.enter)="doLoad()" name="search">
                     </mat-form-field>
                 </div>
                 <div>
