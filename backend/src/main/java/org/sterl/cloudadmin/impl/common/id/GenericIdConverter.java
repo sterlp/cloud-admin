@@ -1,6 +1,7 @@
 package org.sterl.cloudadmin.impl.common.id;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -64,7 +65,7 @@ public class GenericIdConverter<IdType extends Id<ValueType>, ValueType> impleme
             elements.add(new ConvertiblePair(String.class, type.getJavaType()));
             elements.add(new ConvertiblePair(type.getJavaType(), String.class));
         }
-        this.converting = Set.copyOf(elements);
+        this.converting = new HashSet<>(elements);
     }
     
     @Override
