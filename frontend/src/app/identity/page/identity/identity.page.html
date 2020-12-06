@@ -14,7 +14,7 @@
     <div class="c-subheader-nav">
         <div class="btn-group" role="group">
             <button mat-button color="primary" (click)="doSave(false)">Save</button>
-            <button *ngIf="identity && identity.id"  mat-button (click)="doLoad()"><mat-icon>refresh</mat-icon></button>
+            <button *ngIf="identity && identity.id"  mat-button (click)="doLoad(identity.id)"><mat-icon>refresh</mat-icon></button>
         </div>
     </div>
 </div>
