@@ -1,57 +1,59 @@
-<!-- action bar in breadcrumb -->
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+<div class="c-subheader sticky-top justify-content-between px-3 c-header-shadow">
+    <ol class="breadcrumb border-0 m-0 px-0 px-md-3">
+        <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page">Identities</li>
-
-        <li class="breadcrumb-menu">
-          <div class="btn-group" role="group">
-              <a class="btn" routerLink="new"><i class="fa fa-plus-circle"></i> New</a>
-              <button type="button" class="btn btn-link" (click)="doLoad()"><mat-icon>loop</mat-icon> Reload</button>
-          </div>
-      </li>
     </ol>
-</nav>
-
-<div class="container-fluid">
-
-    <app-server-error [error]="serverError"></app-server-error>
-
-    <mat-card>
-        <mat-card-content>
-
-            <div class="d-flex">
-                <div class="flex-grow-1 mr-1">
-                    <mat-form-field style="width: 100%">
-                        <mat-label><mat-icon matPrefix>search</mat-icon> Search ...</mat-label>
-                        <input matInput [(ngModel)]="filter" (keyup.enter)="doLoad()" name="search">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <button (click)="doLoad()" mat-raised-button><mat-icon matPrefix>search</mat-icon></button>
-                </div>
-            </div>
-
-            <table mat-table matSort [dataSource]="identityDataSource" style="width: 100%;">
-                <ng-container *ngFor="let column of identityColumns;" [matColumnDef]="column.id">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.header }} </th>
-                    <td mat-cell *matCellDef="let e" [innerHTML]="column.cell(e)"></td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef> </th>
-                    <td mat-cell *matCellDef="let e">
-                        <div class="d-flex justify-content-end">
-                            <div class="p-2">
-                                <a mat-button routerLink="/identity/{{ e.id }}" matTooltip="Edit"><mat-icon>edit</mat-icon></a>
-                            </div>
-                        </div>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayIdentityColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayIdentityColumns;"></tr>
-            </table>
-            <mat-paginator [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true"></mat-paginator>
-        </mat-card-content>
-    </mat-card>
+    <!-- Breadcrumb Menu-->
+    <div class="c-subheader-nav">
+        <div class="btn-group" role="group">
+            <button mat-button routerLink="new" matTooltip="New Identity"><mat-icon>add</mat-icon>New</button>
+            <button mat-button (click)="doLoad()" matTooltip="Reload"><mat-icon>refresh</mat-icon></button>
+        </div>
+    </div>
 </div>
+
+<main class="c-main">
+    <div class="container-fluid">
+
+        <app-server-error [error]="serverError"></app-server-error>
+
+        <mat-card>
+            <mat-card-content>
+
+                <div class="d-flex">
+                    <div class="flex-grow-1 mr-1">
+                        <mat-form-field style="width: 100%">
+                            <mat-label><mat-icon matPrefix>search</mat-icon> Search ...</mat-label>
+                            <input matInput [(ngModel)]="filter" (keyup.enter)="doLoad()" name="search">
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <button (click)="doLoad()" mat-raised-button matTooltip="Search"><mat-icon matPrefix>search</mat-icon></button>
+                    </div>
+                </div>
+
+                <table mat-table matSort [dataSource]="identityDataSource" style="width: 100%;">
+                    <ng-container *ngFor="let column of identityColumns;" [matColumnDef]="column.id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ column.header }} </th>
+                        <td mat-cell *matCellDef="let e" [innerHTML]="column.cell(e)"></td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef> </th>
+                        <td mat-cell *matCellDef="let e">
+                            <div class="d-flex justify-content-end">
+                                <div class="p-2">
+                                    <a mat-button routerLink="/identity/{{ e.id }}" matTooltip="Edit"><mat-icon>edit</mat-icon></a>
+                                </div>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayIdentityColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayIdentityColumns;"></tr>
+                </table>
+                <mat-paginator [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true"></mat-paginator>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</main>
