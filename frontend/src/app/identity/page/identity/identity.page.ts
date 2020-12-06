@@ -10,6 +10,7 @@ import { SpringErrorWrapper } from 'src/app/shared/spring/api/spring-error.model
   selector: 'app-identity',
   templateUrl: './identity.page.html'
 })
+// tslint:disable: curly
 // tslint:disable-next-line: component-class-suffix
 export class IdentityPage implements OnInit {
 
@@ -30,30 +31,36 @@ export class IdentityPage implements OnInit {
   ngOnInit() {
     this.route.params.subscribe({
       next: params => {
-          if (!params.id || 'new' === params.id) {
-            this.identity = { id: null, name: null, accountStrategy: AccountGenerationStrategy.SAME_AS_IDENTITY_ID };
+          const id = params.id * 1;
+          if (isNaN(id)) {
+            this._new();
           } else {
-            this.doLoad(params.id * 1);
+            this.doLoad(id);
           }
         }
       }
     );
   }
-
-    doLoad(id: number) {
-        this.serverError.clear();
-        this.identityService.get(id).subscribe(r => this.identity = r);
-    }
-    doSave(close: boolean) {
-        this.serverError.clear();
-        this.identityService.save(this.identity).subscribe(r => {
-                this.identity = r;
-                if (close) {
-                this.location.back();
-            }
-        },
-        e => {
-            this.serverError.init(e.error || e);
-        });
-    }
+  _new() {
+    this.identity = { id: null, name: null, accountStrategy: AccountGenerationStrategy.SAME_AS_IDENTITY_ID };
+  }
+  doLoad(id: number) {
+    this.serverError.clear();
+    this.identityService.get(id).subscribe(
+      r => this.identity = r,
+      e => {
+        if (e.status === 404) this._new();
+        else this.serverError.init(e.error || e);
+      });
+  }
+  doSave(close: boolean) {
+    this.serverError.clear();
+    this.identityService.save(this.identity).subscribe(r => {
+            this.identity = r;
+            if (close) {
+            this.location.back();
+        }
+    },
+    e => this.serverError.init(e.error || e));
+  }
 }

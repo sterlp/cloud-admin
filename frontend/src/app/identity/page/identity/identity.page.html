@@ -1,29 +1,47 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-      <li class="breadcrumb-item" aria-current="page"><a routerLink="..">Identities</a></li>
-      <li class="breadcrumb-item active" aria-current="page"> {{ identity ? identity.name : 'Loading ...' }}</li>
-  </ol>
-</nav>
-
-<div class="container" >
-  <mat-card *ngIf="identity">
-    <mat-card-content>
-      <form>
-        <div class="row">
-          <mat-form-field *ngFor="let column of identityColumns" class="col-12">
-            <input matInput [name]="column.id" [placeholder]="column.header" [required]="column.required"
-                   [type]="column.type" [(ngModel)]="identity[column.id]" >
-            <mat-hint class="hint-error" *ngIf="serverError.hasBindingError(column.id)">
-                {{ serverError.getBindingError(column.id)?.defaultMessage }}
-            </mat-hint>
-          </mat-form-field>
+<div class="c-subheader justify-content-between px-3 c-header-shadow">
+    <ol class="breadcrumb border-0 m-0 px-0 px-md-3">
+        <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/identity">Identities</a></li>
+        <li *ngIf="identity == null" class="breadcrumb-item active" aria-current="page">
+            <div class="spinner-border mr-2 text-primary" role="status"></div>
+            Loading ...
+        </li>
+        <li *ngIf="identity"class="breadcrumb-item active" aria-current="page">
+            {{ identity.id ? identity.name : "New Identity" }}
+        </li>
+    </ol>
+    <!-- Breadcrumb Menu-->
+    <div class="c-subheader-nav">
+        <div class="btn-group" role="group">
+            <button mat-button color="primary" (click)="doSave(false)">Save</button>
+            <button *ngIf="identity && identity.id"  mat-button (click)="doLoad()"><mat-icon>refresh</mat-icon></button>
         </div>
-      </form>
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button color="primary" (click)="doSave(true)">Save & Close</button>
-      <button mat-button color="primary" (click)="doSave(false)">Save</button>
-      <button mat-button routerLink="..">Cancel</button>
-    </mat-card-actions>
-  </mat-card>
+    </div>
 </div>
+
+<main class="c-main">
+  <div class="container-fluid">
+    <app-server-error [error]="serverError"></app-server-error>
+
+    <mat-card *ngIf="identity">
+      <mat-card-content>
+        <form>
+          <div class="row">
+            <mat-form-field *ngFor="let column of identityColumns" class="col-12">
+              <input matInput [name]="column.id" [placeholder]="column.header" [required]="column.required"
+                    [type]="column.type" [(ngModel)]="identity[column.id]" >
+              <mat-hint class="hint-error" *ngIf="serverError.hasBindingError(column.id)">
+                  {{ serverError.getBindingError(column.id)?.defaultMessage }}
+              </mat-hint>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="doSave(true)">Save & Close</button>
+        <button mat-button color="primary" (click)="doSave(false)">Save</button>
+        <button mat-button routerLink="..">Cancel</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</main>

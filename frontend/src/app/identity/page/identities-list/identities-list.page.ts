@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { MatPaginator } from '@angular/material/paginator';
 import { CompileShallowModuleMetadata } from '@angular/compiler';
 import { MatSort } from '@angular/material/sort';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { SpringErrorWrapper } from 'src/app/shared/spring/api/spring-error.model';
 import { PageRequest, Pageable } from '@sterlp/ng-spring-boot-api';
 
@@ -23,6 +23,7 @@ export class IdentitiesListPage implements OnInit, AfterViewInit {
     identityDataSource: IdentityDataSource;
     filter: string;
 
+    loading$: Observable<boolean>;
     readonly serverError = new SpringErrorWrapper();
     readonly identityColumns = IdentityModel.COLUMNS;
     readonly displayIdentityColumns: string[] = this.identityColumns.map(c => c.id);
@@ -40,9 +41,10 @@ export class IdentitiesListPage implements OnInit, AfterViewInit {
         this.identityDataSource.hateosSubject$.subscribe(v => {
             if (v && v.page) this.paginator.length = v.page.totalElements;
         });
+        this.loading$ = this.identityDataSource.loading$;
     }
     ngAfterViewInit(): void {
-        this.identityDataSource.doLoad(this.paginator.pageIndex, this.paginator.pageSize);
+        setTimeout(() => this.identityDataSource.doLoad(this.paginator.pageIndex, this.paginator.pageSize), 0);
     }
     doLoad() {
         this.identityDataSource.doLoad();
