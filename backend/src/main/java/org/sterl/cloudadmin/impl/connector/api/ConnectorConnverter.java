@@ -12,7 +12,7 @@ class ConnectorConnverter {
         public SupportedConnector convert(ConnectorProvider<?> source) {
             if (source == null) return null;
             return SupportedConnector.builder()
-                    .id(source.getClassName().getName())
+                    .id(source.getConnectorId())
                     .name(source.getName())
                     .build()
                     .add(source.getConfigMeta());

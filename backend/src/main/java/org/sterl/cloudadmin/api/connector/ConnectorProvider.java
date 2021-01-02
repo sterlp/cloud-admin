@@ -18,12 +18,11 @@ public interface ConnectorProvider<T extends SimpleConnector> {
      */
     T create(System system, SystemCredential credential) throws ConnectorException;
     /**
-     * Return the class name of the connector for selection.
-     * @return the class of the {@link SimpleConnector} returned in the create
+     * @return the class unique ID of the connector for selection.
      */
-    Class<T> getClassName();
+    String getConnectorId();
     
-    /** Return a display name for the User in the UI */
+    /** @return Return a display name for the User in the UI */
     String getName();
     
     /**

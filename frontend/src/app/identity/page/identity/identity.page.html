@@ -1,22 +1,23 @@
 <div class="c-subheader justify-content-between px-3 c-header-shadow">
-    <ol class="breadcrumb border-0 m-0 px-0 px-md-3">
-        <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
-        <li class="breadcrumb-item"><a routerLink="/identity">Identities</a></li>
-        <li *ngIf="identity == null" class="breadcrumb-item active" aria-current="page">
-            <div class="spinner-border mr-2 text-primary" role="status"></div>
-            Loading ...
-        </li>
-        <li *ngIf="identity"class="breadcrumb-item active" aria-current="page">
-            {{ identity.id ? identity.name : "New Identity" }}
-        </li>
-    </ol>
-    <!-- Breadcrumb Menu-->
-    <div class="c-subheader-nav">
-        <div class="btn-group" role="group">
-            <button mat-button color="primary" (click)="doSave(false)">Save</button>
-            <button *ngIf="identity && identity.id"  mat-button (click)="doLoad(identity.id)"><mat-icon>refresh</mat-icon></button>
-        </div>
+  <ol class="breadcrumb border-0 m-0 px-0 px-md-3">
+    <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+    <li class="breadcrumb-item"><a routerLink="/identity">Identities</a></li>
+    <li *ngIf="identity == null" class="breadcrumb-item active" aria-current="page">
+      <div class="spinner-border mr-2 text-primary" role="status"></div>
+      Loading ...
+    </li>
+    <li *ngIf="identity"class="breadcrumb-item active" aria-current="page">
+      {{ identity.id ? identity.name : "New Identity" }}
+    </li>
+  </ol>
+  <!-- Breadcrumb Menu-->
+  <div class="c-subheader-nav">
+    <div class="btn-group" role="group">
+      <button mat-button color="primary" (click)="doSave(true)">Save & Close</button>
+      <button mat-button (click)="doSave(false)">Save</button>
+      <button *ngIf="identity && identity.id"  mat-button (click)="doLoad(identity.id)"><mat-icon>refresh</mat-icon></button>
     </div>
+  </div>
 </div>
 
 <main class="c-main">

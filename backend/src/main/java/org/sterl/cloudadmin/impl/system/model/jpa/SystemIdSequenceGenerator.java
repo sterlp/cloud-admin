@@ -14,7 +14,6 @@ import org.sterl.cloudadmin.api.system.SystemId;
  * https://thoughts-on-java.org/custom-sequence-based-idgenerator/ 
  */
 public class SystemIdSequenceGenerator extends SequenceStyleGenerator {
-    //public static final String NAME = "someName";
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) {
@@ -24,6 +23,5 @@ public class SystemIdSequenceGenerator extends SequenceStyleGenerator {
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) {
         super.configure(LongType.INSTANCE, params, serviceRegistry);
-        //ConfigurationHelper.getString(NAME, params, VALUE_PREFIX_DEFAULT);
     }
 }

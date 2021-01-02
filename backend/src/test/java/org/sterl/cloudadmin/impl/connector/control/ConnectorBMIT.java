@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.sterl.cloudadmin.impl.connector.control.ConnectorBM;
-import org.sterl.cloudadmin.impl.connector.control.ConnectorRegistry;
 import org.sterl.cloudadmin.impl.connector.example.ExampleConnector;
 import org.sterl.cloudadmin.impl.connector.example.ExampleProvider;
 import org.sterl.cloudadmin.impl.connector.model.ConnectorBE;
@@ -46,12 +44,12 @@ class ConnectorBMIT {
     @Test
     void testGetConnectors() {
         assertTrue(registry.getConnectors().size() >= 1);
-        assertTrue(registry.getConnectors().contains(ExampleConnector.class));
+        assertTrue(registry.getConnectors().contains(ExampleConnector.class.getSimpleName()));
     }
     
     @Test
     void testActivateSampleConnector() throws Exception {
-        SystemBE system = new SystemBE("Example", ExampleConnector.class);
+        SystemBE system = new SystemBE("Example", ExampleConnector.class.getSimpleName());
         system.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE, ADMIN");
         system.addConfig(ExampleProvider.RESOURCES_PROP, "Resource1, Resource2");
         SystemCredentialBE credential = new SystemCredentialBE("NONE");
@@ -68,7 +66,7 @@ class ConnectorBMIT {
             return s;
         });
         
-        system = new SystemBE("Example 2", ExampleConnector.class);
+        system = new SystemBE("Example 2", ExampleConnector.class.getSimpleName());
         system.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE");
         final ConnectorBE activate2 = service.activate(system, credential);
 
@@ -79,7 +77,7 @@ class ConnectorBMIT {
             return s;
         });
         
-        system = new SystemBE("Example 3", ExampleConnector.class);
+        system = new SystemBE("Example 3", ExampleConnector.class.getSimpleName());
         final ConnectorBE activate3 = service.activate(system, credential);
 
         trx.execute((status) -> {

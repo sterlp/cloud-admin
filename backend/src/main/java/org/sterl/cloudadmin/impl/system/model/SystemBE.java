@@ -37,9 +37,9 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(of = "id")
 @Accessors(chain = true)
-@ToString(of = {"id", "name", "className", "connectUrl"})
+@ToString(of = {"id", "name", "connectorId", "connectUrl"})
 @Entity
-@Table(name = "SYSTEM", indexes = @Index(name = "IDX_SYSTEM_CLASS_NAME", columnList = "class_name"))
+@Table(name = "SYSTEM", indexes = @Index(name = "IDX_SYSTEM_CLASS_NAME", columnList = "connector_id"))
 public class SystemBE {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_id_generator")
@@ -51,8 +51,8 @@ public class SystemBE {
     private String name;
     
     @NotNull @Size(min = 1, max = 512)
-    @Column(name = "class_name")
-    private String className;
+    @Column(name = "connector_id")
+    private String connectorId;
     
     @Lob
     @Size(max = 1024)
@@ -92,9 +92,9 @@ public class SystemBE {
     public SystemBE(SystemId id) {
         this.id = id;
     }
-    public SystemBE(String name, Class<? extends SimpleConnector> clazz) {
+    public SystemBE(String name, String connectorId) {
         this.name = name;
-        this.className = clazz.getName();
+        this.connectorId = connectorId;
     }
     
     public SystemBE addConfig(String name, String value) {

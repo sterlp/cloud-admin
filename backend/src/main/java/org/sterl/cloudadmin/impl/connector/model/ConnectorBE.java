@@ -2,7 +2,6 @@ package org.sterl.cloudadmin.impl.connector.model;
 
 import org.sterl.cloudadmin.api.connector.SimpleConnector;
 import org.sterl.cloudadmin.impl.system.model.SystemBE;
-import org.sterl.cloudadmin.impl.system.model.SystemCredentialBE;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

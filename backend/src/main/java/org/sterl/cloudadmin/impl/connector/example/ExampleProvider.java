@@ -49,11 +49,6 @@ public class ExampleProvider implements ConnectorProvider<ExampleConnector> {
     }
 
     @Override
-    public Class<ExampleConnector> getClassName() {
-        return ExampleConnector.class;
-    }
-
-    @Override
     public String getName() {
         return "Example in Memory Connector";
     }
@@ -61,5 +56,10 @@ public class ExampleProvider implements ConnectorProvider<ExampleConnector> {
     @Override
     public List<ConfigMetaData> getConfigMeta() {
         return CONFIG_META;
+    }
+
+    @Override
+    public String getConnectorId() {
+        return ExampleConnector.class.getSimpleName();
     }
 }

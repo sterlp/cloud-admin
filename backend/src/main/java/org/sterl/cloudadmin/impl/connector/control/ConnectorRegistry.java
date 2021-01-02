@@ -32,22 +32,22 @@ class ConnectorRegistry {
     @SuppressWarnings("rawtypes")
     private final ServiceLoader<ConnectorProvider> loader = ServiceLoader.load(ConnectorProvider.class);
     private final Map<SystemId, SimpleConnector> activeConnectors = new LinkedHashMap<>();
-    private final Map<Class<SimpleConnector>, ConnectorProvider<?>> providers = new LinkedHashMap<>();
+    private final Map<String, ConnectorProvider<?>> providers = new LinkedHashMap<>();
 
     @Autowired private SystemDAO systemDAO;
     
-    @SuppressWarnings("unchecked")
     public ConnectorRegistry() {
-        loader.forEach(p -> providers.put(p.getClassName(), p));
+        loader.forEach(p -> this.providers.put(p.getConnectorId(), p));
     }
     
+    @SuppressWarnings("resource")
     @PostConstruct
     @Transactional // needs to be public because of the TRX annotation
     public void init() {
         final List<SystemBE> systems = systemDAO.findAll();
         for (SystemBE system : systems) {
             try {
-                final ConnectorProvider<?> provider = getProvider(system.getClassName());
+                final ConnectorProvider<?> provider = getProvider(system.getConnectorId());
                 createConnector(provider, system);
             } catch (Exception e) {
                 LOG.warn("Failed to load connector {}.", system, e);
@@ -55,51 +55,54 @@ class ConnectorRegistry {
         }
     }
     @PreDestroy
-    void stop() {
-        activeConnectors.values().forEach(t -> {
-            try {
-                t.close();
-            } catch (Exception e) {
-                LOG.warn("Failed to close {}: {}", t.getClass(), e.getMessage());
-            }
-        });
+    public void stop() {
+        activeConnectors.values().forEach(c -> close(c));
         activeConnectors.clear();
     }
+    private final Exception close(SimpleConnector connector) {
+        Exception result = null;
+        if (connector != null) {
+            try {
+                connector.close();
+            } catch (Exception e) {
+                LOG.warn("Failed to close {}: {}", connector.getClass(), e.getMessage());
+                result = e;
+            }
+        }
+        return result;
+    }
     
-    Collection<Class<SimpleConnector>> getConnectors() {
+    Collection<String> getConnectors() {
         return providers.keySet();
     }
     Collection<ConnectorProvider<?>> getProviders() {
         return providers.values();
     }
 
+    @SuppressWarnings("resource")
     SimpleConnector createConnector(ConnectorProvider<?> provider, SystemBE s) throws ConnectorException {
         SimpleConnector connector = provider.create(
                 ToSystem.INSTANCE.convert(s), 
                 ToSystemCredential.INSTANCE.convert(s.getCredential()));
         
-        SimpleConnector oldConnector = activeConnectors.put(s.getId(), connector);
-        if (oldConnector != null) {
-            try {
-                oldConnector.close();
-            } catch (Exception e) {
-                LOG.warn("Error during stop of old connector {}", e.getMessage());
-            }
-        }
+        final SimpleConnector oldConnector = activeConnectors.put(s.getId(), connector);
+        close(oldConnector);
+
         return connector;
     }
     
     /**
-     * @param className the class to search for
+     * @param connectorId the connector ID to search for
      * @return the {@link ConnectorProvider} never <code>null</code>
      * @throws IllegalArgumentException if the provider wasn't found
      */
     @NotNull
-    ConnectorProvider<?> getProvider(String className) {
+    ConnectorProvider<?> getProvider(String connectorId) {
         return providers.values().stream().filter(
-            p -> p.getClassName().getName().equals(className))
+            p -> p.getConnectorId().equals(connectorId))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("No provider found for class " + className));
+            .orElseThrow(() -> new IllegalArgumentException("No provider found for " 
+                    + connectorId + " known connectors: " + providers.keySet()));
     }
 
     SimpleConnector getConnector(SystemId id) {

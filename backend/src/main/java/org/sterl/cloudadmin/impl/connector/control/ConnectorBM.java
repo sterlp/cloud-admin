@@ -37,12 +37,12 @@ public class ConnectorBM {
      * Activates a new connector in the system.
      */
     public ConnectorBE activate(final SystemBE system, final SystemCredentialBE credential) throws ConnectorException {
-        final ConnectorProvider<?> provider = registry.getProvider(system.getClassName());
+        final ConnectorProvider<?> provider = registry.getProvider(system.getConnectorId());
         
         // save configuration
         SystemBE s = systemBM.save(system, credential);
         // create the connector
-        SimpleConnector connector = registry.createConnector(provider, s);
+        final SimpleConnector connector = registry.createConnector(provider, s);
         LOG.info("New Connector {} registered.", s.getName());
         s = reconcileConnector(s.getId(), connector);
         

@@ -77,17 +77,17 @@ class RoleBMIT {
 
         SystemCredentialBE credential = trx.execute((status) -> credentialDAO.save(new SystemCredentialBE("NONE")));
 
-        SystemBE git = new SystemBE("GIT", ExampleConnector.class);
+        SystemBE git = new SystemBE("GIT", ExampleConnector.class.getSimpleName());
         git.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE, ADMIN");
         git.addConfig(ExampleProvider.RESOURCES_PROP, "FooTeams:Project, Repo_Team_1:Repository, Repo_Team_2:Repository");
         activeGit = service.activate(git, credential).getSystem().getId();
         
-        SystemBE confluence = new SystemBE("Confluence", ExampleConnector.class);
+        SystemBE confluence = new SystemBE("Confluence", ExampleConnector.class.getSimpleName());
         confluence.addConfig(ExampleProvider.PERMISSIONS_PROP, "VIEW, COMMENT, EDIT, ADMIN");
         confluence.addConfig(ExampleProvider.RESOURCES_PROP, "Space_Team_1, SpaceTeam_2");
         activateConfluence = service.activate(confluence, credential).getSystem().getId();
         
-        SystemBE cloud = new SystemBE("OpenShift", ExampleConnector.class);
+        SystemBE cloud = new SystemBE("OpenShift", ExampleConnector.class.getSimpleName());
         cloud.addConfig(ExampleProvider.PERMISSIONS_PROP, "MEMBER, ROOT");
         cloud.addConfig(ExampleProvider.RESOURCES_PROP, "Cloud_Team_1, Cloud_Team_2");
         activeCloud = service.activate(cloud, credential).getSystem().getId();
