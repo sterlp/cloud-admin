@@ -1,8 +1,6 @@
 // Import styles
 @import "~@coreui/coreui/scss/coreui";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-$roboto-font-path: "~roboto-fontface/fonts" !default;
-@import "~roboto-fontface/css/roboto/sass/roboto-fontface";
 
 .c-header-shadow {
     border: 0;
@@ -66,10 +64,6 @@ $roboto-font-path: "~roboto-fontface/fonts" !default;
 // and break the design
 .mat-paginator {
     min-width: 450px;
-}
-
-.nav-dropdown-items {
-    overflow: hidden;
 }
 
 .col.table,
