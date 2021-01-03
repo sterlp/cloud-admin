@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -20,24 +18,24 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.sterl.cloudadmin.api.identity.IdentityId;
+import org.sterl.cloudadmin.impl.common.id.jpa.EntityWithId;
+import org.sterl.cloudadmin.impl.identity.converter.IdentityIdConverter;
 import org.sterl.cloudadmin.impl.role.model.RoleBE;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data @NoArgsConstructor
-@EqualsAndHashCode(of = {"id", "name"})
+@Getter @Setter
+@EqualsAndHashCode(of = "name", callSuper = true)
 @Entity
 @Table(name = "IDENTITY", uniqueConstraints = @UniqueConstraint(name = "UC_IDENTITY_NAME", columnNames = "name"))
-public class IdentityBE {
-    @GenericGenerator(name = "identity_id_generator", strategy = "org.sterl.cloudadmin.impl.identity.model.jpa.IdentityIdSequenceGenerator")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_id_generator")
+public class IdentityBE extends EntityWithId<IdentityId, Long> {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(updatable = false)
-    private IdentityId id;
+    private Long id;
     /**
      * The unique name of this identity in the system
      */
@@ -54,10 +52,6 @@ public class IdentityBE {
     @Size(max = 128) @Email
     private String email;
     
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "account_strategy", length = 25, nullable = false)
-    private AccountGenerationStrategy accountStrategy = AccountGenerationStrategy.SAME_AS_IDENTITY_ID;
-    
     @ManyToMany(cascade = {}, fetch = FetchType.LAZY)
     @JoinTable(
         name = "IDENTITY_TO_ROLE", 
@@ -68,8 +62,11 @@ public class IdentityBE {
     )
     private List<RoleBE> roles;
     
+    public IdentityBE() {
+        super(IdentityIdConverter.INSTANCE);
+    }
     public IdentityBE(@NotNull @Size(min = 1, max = 1024) String name) {
-        super();
+        this();
         this.name = name;
     }
 

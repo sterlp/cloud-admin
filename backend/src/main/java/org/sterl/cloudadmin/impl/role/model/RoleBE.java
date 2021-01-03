@@ -19,26 +19,23 @@ import javax.validation.constraints.NotNull;
 
 import org.sterl.cloudadmin.api.role.RoleId;
 import org.sterl.cloudadmin.api.system.SystemId;
+import org.sterl.cloudadmin.impl.common.id.jpa.EntityWithId;
 import org.sterl.cloudadmin.impl.identity.model.IdentityBE;
+import org.sterl.cloudadmin.impl.role.model.jpa.RoleConverter;
 import org.sterl.cloudadmin.impl.system.model.HasSystem;
-import org.sterl.cloudadmin.impl.system.model.SystemBE;
 import org.sterl.cloudadmin.impl.system.model.SystemPermissionBE;
 import org.sterl.cloudadmin.impl.system.model.SystemResourceBE;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@NoArgsConstructor
-@Data
-@EqualsAndHashCode(of = "id")
-@Entity
+@Entity @Getter @Setter
 @Table(name = "ROLE")
-public class RoleBE {
+public class RoleBE extends EntityWithId<RoleId, String> {
 
     @Id @Column(length = 255)
-    @NotNull 
-    private RoleId id;
+    @NotNull
+    private String id;
     /*
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -54,14 +51,18 @@ public class RoleBE {
     
     @ManyToMany(mappedBy = "roles")
     private List<IdentityBE> identities;
+    
+    public RoleBE() {
+        super(RoleConverter.INSTANCE);
+    }
 
     public RoleBE(@NotNull RoleId id) {
-        super();
-        this.id = id;
+        this();
+        this.id = org.sterl.cloudadmin.impl.common.id.Id.valueOf(id);
     }
     
     public Collection<SystemId> assignedSystems() {
-        return this.systemRoles.stream().map(sr -> sr.getSystem().getId()).collect(Collectors.toSet());
+        return this.systemRoles.stream().map(sr -> SystemId.newSystemId(sr.getSystem().getId())).collect(Collectors.toSet());
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.sterl.cloudadmin.impl.system.model;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -13,9 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.sterl.cloudadmin.api.system.ExternalPermissionId;
-import org.sterl.cloudadmin.api.system.SystemPermissionId;
+import org.sterl.cloudadmin.impl.system.converter.ExternalPermissionIdConverter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +26,7 @@ import lombok.experimental.Accessors;
 /**
  * Any system may have multiple permissions e.g.:
  * <ul>
- *     <li>Database: SELECT, UPDATE
+ *  <li>Database: SELECT, UPDATE
  *  <li>Confluence: ADMIN, MEMBER
  *  <li>OpenShift: ADMIN, USER
  * </ul>
@@ -39,12 +39,12 @@ import lombok.experimental.Accessors;
 @Table(name = "SYSTEM_PERMISSION", uniqueConstraints = @UniqueConstraint(name = "UC_SYSTEM_PERMISSION_NAME", columnNames = {"name", "SYSTEM_ID"}))
 public class SystemPermissionBE implements HasSystem {
     
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_permission_id_generator")
-    @GenericGenerator(name = "system_permission_id_generator", strategy = "org.sterl.cloudadmin.impl.system.model.jpa.SystemPermissionIdSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id @Column(updatable = false)
-    private SystemPermissionId id;
+    private Long id;
 
-    @NotNull @Column(updatable = false, length = 255)
+    @NotNull @Column(updatable = false, length = 255, columnDefinition = "varchar(255)")
+    @Convert(converter = ExternalPermissionIdConverter.class)
     private ExternalPermissionId name;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

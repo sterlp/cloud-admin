@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.sterl.cloudadmin.api.identity.IdentityId;
 import org.sterl.cloudadmin.api.system.ExternalAccountId;
 import org.sterl.cloudadmin.api.system.SystemId;
 import org.sterl.cloudadmin.impl.common.annotation.BusinessManager;
+import org.sterl.cloudadmin.impl.common.id.Id;
 import org.sterl.cloudadmin.impl.identity.dao.IdentityDAO;
 import org.sterl.cloudadmin.impl.identity.model.IdentityBE;
 import org.sterl.cloudadmin.impl.role.model.RoleBE;
@@ -42,7 +42,7 @@ public class IdentityBM {
         List<SystemRoleBE> result = new ArrayList<>();
         for(RoleBE r : identity.getRoles()) {
             for (SystemRoleBE sr : r.getSystemRoles()) {
-                if (sr.getSystem().getId().equals(systemId)) result.add(sr);
+                if (sr.getSystem().getStrongId().equals(systemId)) result.add(sr);
             }
         }
         return result;
@@ -53,6 +53,6 @@ public class IdentityBM {
     }
 
     public IdentityBE getIdentity(IdentityId identityId) {
-        return identityDAO.getOne(identityId);
+        return identityDAO.getOne(Id.valueOf(identityId));
     }
 }

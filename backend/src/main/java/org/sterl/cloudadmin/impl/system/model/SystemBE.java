@@ -23,29 +23,25 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.sterl.cloudadmin.api.connector.SimpleConnector;
 import org.sterl.cloudadmin.api.system.SystemId;
+import org.sterl.cloudadmin.impl.common.id.jpa.EntityWithId;
+import org.sterl.cloudadmin.impl.system.converter.SystemIdConverter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-@NoArgsConstructor
-@Data
-@EqualsAndHashCode(of = "id")
+@Getter @Setter
 @Accessors(chain = true)
 @ToString(of = {"id", "name", "connectorId", "connectUrl"})
 @Entity
 @Table(name = "SYSTEM", indexes = @Index(name = "IDX_SYSTEM_CLASS_NAME", columnList = "connector_id"))
-public class SystemBE {
+public class SystemBE extends EntityWithId<SystemId, Long> {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_id_generator")
-    @GenericGenerator(name = "system_id_generator", strategy = "org.sterl.cloudadmin.impl.system.model.jpa.SystemIdSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id @Column(updatable = false)
-    private SystemId id;
+    private Long id;
     
     @NotNull @Size(min = 1, max = 255)
     private String name;
@@ -86,13 +82,19 @@ public class SystemBE {
                 foreignKey = @ForeignKey(name = "FK_SYSTEM_TO_CREDENTIAL"))
     private SystemCredentialBE credential;
     
+    public SystemBE() {
+        super(SystemIdConverter.INSTANCE);
+    }
+
     /**
      * Reference constructor
      */
     public SystemBE(SystemId id) {
-        this.id = id;
+        this();
+        this.id = org.sterl.cloudadmin.impl.common.id.Id.valueOf(id);
     }
     public SystemBE(String name, String connectorId) {
+        this();
         this.name = name;
         this.connectorId = connectorId;
     }

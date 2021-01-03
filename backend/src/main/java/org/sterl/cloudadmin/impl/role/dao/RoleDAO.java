@@ -6,6 +6,6 @@ import org.sterl.cloudadmin.api.role.RoleId;
 import org.sterl.cloudadmin.impl.role.model.RoleBE;
 
 @RepositoryRestResource(itemResourceRel = "role", collectionResourceRel = "roles", path = "roles")
-public interface RoleDAO extends JpaRepository<RoleBE, RoleId> {
+public interface RoleDAO extends JpaRepository<RoleBE, String> {
 
 }

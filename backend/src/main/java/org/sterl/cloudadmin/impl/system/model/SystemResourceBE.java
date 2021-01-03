@@ -13,9 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.sterl.cloudadmin.api.system.ExternalResourceId;
-import org.sterl.cloudadmin.api.system.SystemResourceId;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,10 +36,9 @@ import lombok.experimental.Accessors;
 @Entity
 @Table(name = "SYSTEM_RESOURCE", uniqueConstraints = @UniqueConstraint(name = "UC_SYSTEM_RESOURCE_NAME_TYPE", columnNames = {"name", "type", "SYSTEM_ID"}))
 public class SystemResourceBE implements HasSystem {
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_resource_id_generator")
-    @GenericGenerator(name = "system_resource_id_generator", strategy = "org.sterl.cloudadmin.impl.system.model.jpa.SystemResourceIdSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id @Column(updatable = false)
-    private SystemResourceId id;
+    private Long id;
     
     @NotNull
     @Column(length = 255)

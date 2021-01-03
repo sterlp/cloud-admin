@@ -11,8 +11,8 @@ import org.sterl.cloudadmin.api.system.SystemPermissionId;
 import org.sterl.cloudadmin.impl.system.model.SystemPermissionBE;
 
 @RepositoryRestResource(itemResourceRel = "systemPermission", collectionResourceRel = "systemPermissions", path = "system-permissions")
-public interface SystemPermissionDAO extends HasSystemDAO<SystemPermissionBE, SystemPermissionId, ExternalPermissionId> {
+public interface SystemPermissionDAO extends HasSystemDAO<SystemPermissionBE, Long, ExternalPermissionId> {
 
     @Query("SELECT e from SystemPermissionBE e WHERE e.system.id = :systemId AND name IN (:names) ORDER BY name ASC")
-    List<SystemPermissionBE> findBySystemIdAndNames(SystemId systemId, Collection<ExternalPermissionId> names);
+    List<SystemPermissionBE> findBySystemIdAndNames(Long systemId, Collection<ExternalPermissionId> names);
 }

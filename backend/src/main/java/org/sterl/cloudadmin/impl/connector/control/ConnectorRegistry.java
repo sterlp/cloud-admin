@@ -1,7 +1,6 @@
 package org.sterl.cloudadmin.impl.connector.control;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.sterl.cloudadmin.api.connector.ConnectorProvider;
 import org.sterl.cloudadmin.api.connector.SimpleConnector;
 import org.sterl.cloudadmin.api.system.SystemId;
+import org.sterl.cloudadmin.impl.common.id.Id;
 import org.sterl.cloudadmin.impl.connector.exception.ConnectorException;
 import org.sterl.cloudadmin.impl.system.converter.SystemConverters.ToSystem;
 import org.sterl.cloudadmin.impl.system.converter.SystemConverters.ToSystemCredential;
@@ -31,7 +31,7 @@ class ConnectorRegistry {
 
     @SuppressWarnings("rawtypes")
     private final ServiceLoader<ConnectorProvider> loader = ServiceLoader.load(ConnectorProvider.class);
-    private final Map<SystemId, SimpleConnector> activeConnectors = new LinkedHashMap<>();
+    private final Map<Long, SimpleConnector> activeConnectors = new LinkedHashMap<>();
     private final Map<String, ConnectorProvider<?>> providers = new LinkedHashMap<>();
 
     @Autowired private SystemDAO systemDAO;
@@ -106,7 +106,7 @@ class ConnectorRegistry {
     }
 
     SimpleConnector getConnector(SystemId id) {
-        return activeConnectors.get(id);
+        return activeConnectors.get(Id.valueOf(id));
     }
     Collection<SimpleConnector> getActiveConnectors() {
         return activeConnectors.values();

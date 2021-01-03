@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.sterl.cloudadmin.api.system.ExternalPermissionId;
 import org.sterl.cloudadmin.api.system.ExternalResourceId;
 import org.sterl.cloudadmin.api.system.SystemId;
 import org.sterl.cloudadmin.impl.common.annotation.BusinessManager;
+import org.sterl.cloudadmin.impl.common.id.Id;
 import org.sterl.cloudadmin.impl.identity.model.IdentityBE;
 import org.sterl.cloudadmin.impl.system.dao.SystemAccountDAO;
 import org.sterl.cloudadmin.impl.system.dao.SystemCredentialDAO;
@@ -43,11 +45,11 @@ public class SystemBM {
     @PersistenceContext EntityManager em;
     
     public SystemAccountBE findBy(IdentityBE identity, SystemId systemId) {
-        return systemAccountDAO.findByIdentityIdAndSystemId(identity.getId(), systemId);
+        return systemAccountDAO.findByIdentityIdAndSystemId(identity.getId(), Id.valueOf(systemId));
     }
     public SystemAccountBE createAccount(ExternalAccountId name, IdentityBE identity, SystemId systemId) {
         SystemAccountBE result = new SystemAccountBE();
-        result.setSystem(em.getReference(SystemBE.class, systemId));
+        result.setSystem(em.getReference(SystemBE.class, Id.valueOf(systemId)));
         result.setIdentity(identity);
         result.setName(name);
         return systemAccountDAO.saveAndFlush(result);
@@ -66,10 +68,11 @@ public class SystemBM {
     /**
      * Sets for the given {@link SystemBE} the permissions and resources.
      */
-    public SystemBE setPermissionsAndResources(SystemId id, List<ExternalPermissionId> permissions,
+    public SystemBE setPermissionsAndResources(
+            @NotNull SystemId id, List<ExternalPermissionId> permissions,
             List<SystemResourceBE> resources) {
 
-        final SystemBE result = systemDAO.findById(id).get();
+        final SystemBE result = systemDAO.findById(Id.valueOf(id)).get();
         
         mergePermissionsBA.merge(result.getPermissions(), MergeSystemPermissionsBA.newPermissions(permissions), result);
         mergeResourcesBA.merge(result.getResources(), resources, result);
@@ -80,19 +83,19 @@ public class SystemBM {
      * Sets for the system the given accounts 
      */
     public SystemBE setAccounts(SystemId id, List<SystemAccountBE> accounts) {
-        final SystemBE result = systemDAO.findById(id).get();
+        final SystemBE result = systemDAO.findById(Id.valueOf(id)).get();
         mergeAccountsBA.merge(result.getAccounts(), accounts, result);
         return result;
     }
 
-    public List<SystemPermissionBE> getPermissions(SystemId systemId, Collection<ExternalPermissionId> permissions) {
-        return permissionDAO.findBySystemIdAndNames(systemId, permissions);
+    public List<SystemPermissionBE> getPermissions(@NotNull SystemId systemId, Collection<ExternalPermissionId> permissions) {
+        return permissionDAO.findBySystemIdAndNames(Id.valueOf(systemId), permissions);
     }
 
     public List<SystemResourceBE> getResources(SystemId systemId, Collection<ExternalResourceId> resources) {
         List<SystemResourceBE> result = new ArrayList<>(resources.size());
         for (ExternalResourceId er : resources) {
-            result.add(resourcesDAO.findBySystemIdAndNameAndType(systemId, er.getName(), er.getType()));
+            result.add(resourcesDAO.findBySystemIdAndNameAndType(Id.valueOf(systemId), er.getName(), er.getType()));
         }
         return result; 
     }

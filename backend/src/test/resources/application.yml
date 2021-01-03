@@ -10,8 +10,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        show_sql: false
   data:
     rest:
       base-path: /api
   quartz:
     job-store-type: JDBC
+
+    

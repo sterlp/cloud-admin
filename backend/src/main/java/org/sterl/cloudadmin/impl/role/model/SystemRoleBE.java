@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "SYSTEM_ROLE")
 public class SystemRoleBE {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_role_id_generator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 

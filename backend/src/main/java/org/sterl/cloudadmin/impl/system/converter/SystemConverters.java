@@ -1,11 +1,16 @@
 package org.sterl.cloudadmin.impl.system.converter;
 
 import org.sterl.cloudadmin.api.system.SystemAccount;
+import org.sterl.cloudadmin.api.system.SystemAccountId;
 import org.sterl.cloudadmin.api.system.SystemCredential;
+import org.sterl.cloudadmin.api.system.SystemId;
 import org.sterl.cloudadmin.api.system.SystemPermission;
+import org.sterl.cloudadmin.api.system.SystemPermissionId;
 import org.sterl.cloudadmin.api.system.SystemResource;
+import org.sterl.cloudadmin.api.system.SystemResourceId;
 import org.sterl.cloudadmin.impl.common.converter.CloudConverter;
 import org.sterl.cloudadmin.impl.common.id.ETag;
+import org.sterl.cloudadmin.impl.common.id.Id;
 import org.sterl.cloudadmin.impl.system.model.SystemAccountBE;
 import org.sterl.cloudadmin.impl.system.model.SystemBE;
 import org.sterl.cloudadmin.impl.system.model.SystemCredentialBE;
@@ -22,10 +27,10 @@ public class SystemConverters {
             final org.sterl.cloudadmin.api.system.System result = new  org.sterl.cloudadmin.api.system.System();
             result.setConnectUrl(source.getConnectUrl());
             if (source.getCredential() != null) {
-                result.setCredentialId(source.getCredential().getId());
+                result.setCredentialId(source.getCredential().getStrongId());
             }
             result.setDescription(source.getDescription());
-            result.setId(source.getId());
+            result.setId(SystemId.newSystemId(source.getId()));
             result.setName(source.getName());
             if (source.getVersion() != null) {
                 result.setVersion(new ETag(source.getVersion()));
@@ -44,7 +49,7 @@ public class SystemConverters {
         public SystemCredential convert(SystemCredentialBE source) {
             if (source == null) return null;
             SystemCredential result = new SystemCredential();
-            result.setId(source.getId());
+            result.setId(source.getStrongId());
             result.setName(source.getName());
             result.setPassword(source.getPassword());
             result.setType(source.getType());
@@ -61,8 +66,8 @@ public class SystemConverters {
             if (source == null) return null;
             SystemPermission result = new SystemPermission();
             result.setExternalId(source.getName());
-            result.setSystemId(source.getSystem().getId());
-            result.setId(source.getId());
+            result.setSystemId(SystemId.newSystemId(source.getSystem().getId()));
+            result.setId(SystemPermissionId.newSystemPermissionId(source.getId()));
             return result;
         }
     }
@@ -74,12 +79,12 @@ public class SystemConverters {
         public SystemAccount convert(SystemAccountBE source) {
             if (source == null) return null;
             SystemAccount result = new SystemAccount();
-            result.setId(source.getId());
+            result.setId(SystemAccountId.newSystemAccountId(source.getId()));
             result.setExternalId(source.getName());
             result.setEmail(source.getIdentity().getEmail());
             result.setFirstName(source.getIdentity().getFirstName());
             result.setLastName(source.getIdentity().getLastName());
-            result.setSystemId(source.getSystem().getId());
+            result.setSystemId(SystemId.newSystemId(source.getSystem().getId()));
             return result;
         }
     }
@@ -92,8 +97,8 @@ public class SystemConverters {
             if (source == null) return null;
             SystemResource result = new SystemResource();
             result.setExternalId(source.asExternalResourceId());
-            result.setId(source.getId());
-            result.setSystemId(source.getSystem().getId());
+            result.setId(SystemResourceId.newSystemResourceId(source.getId()));
+            result.setSystemId(SystemId.newSystemId(source.getSystem().getId()));
             return result;
         }
     }
@@ -123,7 +128,7 @@ public class SystemConverters {
         public SystemAccountBE convert(SystemAccount source) {
             if (source == null) return null;
             SystemAccountBE result = new SystemAccountBE();
-            result.setId(source.getId());
+            result.setId(Id.valueOf(source.getId()));
             result.setName(source.getExternalId());
             if (source.getSystemId() != null) {
                 result.setSystem(new SystemBE(source.getSystemId()));

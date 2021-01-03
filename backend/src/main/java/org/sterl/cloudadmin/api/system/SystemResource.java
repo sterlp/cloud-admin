@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class SystemResource {
     /**
-     * Optional reference to the stored system config.
+     * Optional reference to the stored system configuration.
      */
     private SystemId systemId;
     /**
@@ -20,7 +20,7 @@ public class SystemResource {
     private SystemResourceId id;
     /**
      * Unique name of this permission in the system. The only needed value here. 
-     * Consider to use Enums to implement it in a simple scenario.
+     * Consider to use {@link Enum}s to implement it in a simple scenario.
      * 
      * Optional resource type to group resources.
      * <ul>

@@ -6,6 +6,6 @@ import org.sterl.cloudadmin.api.system.SystemCredentialId;
 import org.sterl.cloudadmin.impl.system.model.SystemCredentialBE;
 
 @RepositoryRestResource(itemResourceRel = "systemCredential", collectionResourceRel = "systemCredentials", path = "system-credentials")
-public interface SystemCredentialDAO extends JpaRepository<SystemCredentialBE, SystemCredentialId> {
+public interface SystemCredentialDAO extends JpaRepository<SystemCredentialBE, Long> {
 
 }

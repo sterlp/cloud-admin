@@ -17,6 +17,6 @@ import org.sterl.cloudadmin.impl.system.model.SystemBE;
  */
 @NoRepositoryBean
 public interface HasSystemDAO<T, ID, NameType> extends JpaRepository<T, ID> {
-    Page<T> findBySystemId(SystemId id, Pageable page);
-    List<T> findByNameAndSystemId(NameType name, SystemId id);
+    Page<T> findBySystemId(Long id, Pageable page);
+    List<T> findByNameAndSystemId(NameType name, Long id);
 }

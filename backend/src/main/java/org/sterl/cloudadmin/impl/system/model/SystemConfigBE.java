@@ -15,8 +15,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import org.sterl.cloudadmin.api.system.SystemId;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,12 +28,13 @@ import lombok.experimental.Accessors;
 @Entity
 @Table(name = "SYSTEM_CONFIG")
 public class SystemConfigBE implements HasSystem {
+
     @Embeddable
     @Data @NoArgsConstructor @AllArgsConstructor
     public static class SystemConfigPK implements Serializable {
         private static final long serialVersionUID = 1L;
         @Column(name = "system_id", updatable = false)
-        private SystemId systemId;
+        private Long systemId;
         @Size(min = 1, max = 256)
         @Column(name = "name")
         private String name;

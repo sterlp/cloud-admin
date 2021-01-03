@@ -12,28 +12,26 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.sterl.cloudadmin.api.system.SystemCredentialId;
 import org.sterl.cloudadmin.api.system.SystemCredentialType;
+import org.sterl.cloudadmin.impl.common.id.jpa.EntityWithId;
+import org.sterl.cloudadmin.impl.system.converter.SystemCredentialIdConverter;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-@Data @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Getter @Setter
 @Accessors(chain = true)
 @ToString(exclude = "password")
 @Entity
 @Table(name = "SYSTEM_CREDENTIAL", indexes = @Index(name = "IDX_SYSTEM_CREDENTIAL_NAME", columnList = "name", unique = false))
-public class SystemCredentialBE {
+public class SystemCredentialBE extends EntityWithId<SystemCredentialId, Long> {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_credential_id_generator")
-    @GenericGenerator(name = "system_credential_id_generator", strategy = "org.sterl.cloudadmin.impl.system.model.jpa.SystemCredentialIdSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id @Column(updatable = false)
-    private SystemCredentialId id;
+    private Long id;
     @NotNull
     @Enumerated(EnumType.STRING)
     private SystemCredentialType type = SystemCredentialType.BASIC;
@@ -44,7 +42,13 @@ public class SystemCredentialBE {
     @Size(max = 255)
     private String password;
     
+    public SystemCredentialBE() {
+        super(SystemCredentialIdConverter.INSTANCE);
+    }
+    
     public SystemCredentialBE(String name) {
+        this();
         this.name = name;
     }
+
 }

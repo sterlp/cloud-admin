@@ -15,9 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.sterl.cloudadmin.api.system.ExternalAccountId;
-import org.sterl.cloudadmin.api.system.SystemAccountId;
 import org.sterl.cloudadmin.impl.identity.model.IdentityBE;
 
 import lombok.Data;
@@ -39,10 +37,9 @@ import lombok.experimental.Accessors;
 })
 public class SystemAccountBE implements HasSystem {
     
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "system_account_id_generator")
-    @GenericGenerator(name = "system_account_id_generator", strategy = "org.sterl.cloudadmin.impl.system.model.jpa.SystemAccountIdSequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id @Column(updatable = false)
-    private SystemAccountId id;
+    private Long id;
 
     @NotNull
     private ExternalAccountId name;

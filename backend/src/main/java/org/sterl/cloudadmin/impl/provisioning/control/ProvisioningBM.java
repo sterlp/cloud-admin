@@ -45,6 +45,7 @@ public class ProvisioningBM {
             // generate or load account to the systems
             SystemAccountBE account = identityBM.getOrCreateSystemAccount(identity, systemId);
             SimpleConnector connector = connectorBM.getConnector(systemId);
+            if (connector == null) throw new IllegalStateException("Connector " + systemId + " not active!");
             // 1. TODO create account if needed and supported
             // 2. provision the stuff
             provisionBA.execute(connector, account, systemRoles);

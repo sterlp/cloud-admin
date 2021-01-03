@@ -80,17 +80,17 @@ class RoleBMIT {
         SystemBE git = new SystemBE("GIT", ExampleConnector.class.getSimpleName());
         git.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE, ADMIN");
         git.addConfig(ExampleProvider.RESOURCES_PROP, "FooTeams:Project, Repo_Team_1:Repository, Repo_Team_2:Repository");
-        activeGit = service.activate(git, credential).getSystem().getId();
+        activeGit = service.activate(git, credential).getSystem().getStrongId();
         
         SystemBE confluence = new SystemBE("Confluence", ExampleConnector.class.getSimpleName());
         confluence.addConfig(ExampleProvider.PERMISSIONS_PROP, "VIEW, COMMENT, EDIT, ADMIN");
         confluence.addConfig(ExampleProvider.RESOURCES_PROP, "Space_Team_1, SpaceTeam_2");
-        activateConfluence = service.activate(confluence, credential).getSystem().getId();
+        activateConfluence = service.activate(confluence, credential).getSystem().getStrongId();
         
         SystemBE cloud = new SystemBE("OpenShift", ExampleConnector.class.getSimpleName());
         cloud.addConfig(ExampleProvider.PERMISSIONS_PROP, "MEMBER, ROOT");
         cloud.addConfig(ExampleProvider.RESOURCES_PROP, "Cloud_Team_1, Cloud_Team_2");
-        activeCloud = service.activate(cloud, credential).getSystem().getId();
+        activeCloud = service.activate(cloud, credential).getSystem().getStrongId();
     }
     
     @Order(1)
@@ -108,18 +108,18 @@ class RoleBMIT {
         trx.execute((state) -> {
             RoleBE roleAdmin = roleBM.get(adminId);
             SystemRoleBE systemRole = roleAdmin.getSystemRoles().get(0);
-            assertEquals(activeGit, systemRole.getSystem().getId());
+            assertEquals(activeGit, systemRole.getSystem().getStrongId());
             assertEquals(1, systemRole.getPermissions().size());
             assertEquals(1, systemRole.getResources().size());
             
             systemRole = roleAdmin.getSystemRoles().get(1);
-            assertEquals(activateConfluence, systemRole.getSystem().getId());
+            assertEquals(activateConfluence, systemRole.getSystem().getStrongId());
             assertEquals(1, systemRole.getPermissions().size());
             System.out.println(systemRole.getResources());
             assertEquals(2, systemRole.getResources().size());
             
             systemRole = roleAdmin.getSystemRoles().get(2);
-            assertEquals(activeCloud, systemRole.getSystem().getId());
+            assertEquals(activeCloud, systemRole.getSystem().getStrongId());
             assertEquals(2, systemRole.getResources().size());
             return null;
         });
@@ -132,7 +132,7 @@ class RoleBMIT {
     @Test
     public void assignRoles() throws ConnectorException {
         IdentityBE admin = identityBM.createIdentity("ADMIN");
-        provisioningBM.assignRole(admin.getId(), adminId);
+        provisioningBM.assignRole(admin.getStrongId(), adminId);
         
         System.out.println("CONFLUENCE");
         helper.getExampleConnector(activateConfluence).print();

@@ -16,6 +16,7 @@ import org.sterl.cloudadmin.api.role.RoleId;
 import org.sterl.cloudadmin.api.system.ExternalPermissionId;
 import org.sterl.cloudadmin.api.system.ExternalResourceId;
 import org.sterl.cloudadmin.api.system.SystemId;
+import org.sterl.cloudadmin.impl.common.id.Id;
 import org.sterl.cloudadmin.impl.role.dao.RoleDAO;
 import org.sterl.cloudadmin.impl.role.model.RoleBE;
 import org.sterl.cloudadmin.impl.role.model.SystemRoleBE;
@@ -38,7 +39,7 @@ public class RoleBM {
             List<SystemResourceBE> resource,
             List<SystemPermissionBE> permissions) {
 
-        Optional<RoleBE> find = roleDAO.findById(roleId);
+        Optional<RoleBE> find = roleDAO.findById(Id.valueOf(roleId));
         
         return addToRole(find.orElse(new RoleBE(roleId)), resource, permissions);
     }
@@ -65,6 +66,6 @@ public class RoleBM {
     }
 
     public RoleBE get(RoleId id) {
-        return roleDAO.getOne(id);
+        return roleDAO.getOne(Id.valueOf(id));
     }
 }
