@@ -16,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.sterl.cloudadmin.impl.connector.example.ExampleConfig;
 import org.sterl.cloudadmin.impl.connector.example.ExampleConnector;
-import org.sterl.cloudadmin.impl.connector.example.ExampleProvider;
 import org.sterl.cloudadmin.impl.connector.model.ConnectorBE;
 import org.sterl.cloudadmin.impl.system.dao.SystemDAO;
 import org.sterl.cloudadmin.impl.system.model.SystemBE;
 import org.sterl.cloudadmin.impl.system.model.SystemCredentialBE;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest()
 @ExtendWith(SpringExtension.class)
@@ -34,6 +37,8 @@ class ConnectorBMIT {
     @Autowired ConnectorBM service;
     @Autowired ConnectorRegistry registry;
     @Autowired TransactionTemplate trx;
+    
+    @Autowired ObjectMapper mapper;
     
     @BeforeAll @AfterAll
     void clean() {
@@ -50,8 +55,12 @@ class ConnectorBMIT {
     @Test
     void testActivateSampleConnector() throws Exception {
         SystemBE system = new SystemBE("Example", ExampleConnector.class.getSimpleName());
-        system.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE, ADMIN");
-        system.addConfig(ExampleProvider.RESOURCES_PROP, "Resource1, Resource2");
+        system.setConfig(
+            toString(new ExampleConfig(
+                    "Resource1, Resource2", 
+                    "READ, WRITE, ADMIN")
+                )
+        );
         SystemCredentialBE credential = new SystemCredentialBE("NONE");
         
         final ConnectorBE activate1 = service.activate(system, credential);
@@ -67,13 +76,18 @@ class ConnectorBMIT {
         });
         
         system = new SystemBE("Example 2", ExampleConnector.class.getSimpleName());
-        system.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE");
+        system.setConfig(
+                toString(new ExampleConfig(
+                        "FOO", 
+                        "READ, WRITE")
+                    )
+            );
         final ConnectorBE activate2 = service.activate(system, credential);
 
         trx.execute((status) -> {
             SystemBE s = systemDAO.getOne(activate2.getSystem().getId());
             assertEquals(2, s.getPermissions().size());
-            assertEquals(0, s.getResources().size());
+            assertEquals(1, s.getResources().size());
             return s;
         });
         
@@ -102,4 +116,12 @@ class ConnectorBMIT {
         });
     }
     
+    
+    String toString(ExampleConfig config) {
+        try {
+            return mapper.writeValueAsString(config);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

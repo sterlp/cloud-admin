@@ -27,6 +27,7 @@ public abstract class EntityWithId<IdType extends Id<ValueTye>, ValueTye> {
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (this.getId() == null) return false;
+        if (obj == null) return false;
 
         if (obj instanceof EntityWithId) {
             EntityWithId<?, ?> entity = (EntityWithId<?, ?>)obj;

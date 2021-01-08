@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -29,17 +29,13 @@ import org.sterl.cloudadmin.impl.system.model.SystemBE;
 class ConnectorRegistry {
     private static final Logger LOG = LoggerFactory.getLogger(ConnectorRegistry.class);
 
-    @SuppressWarnings("rawtypes")
-    private final ServiceLoader<ConnectorProvider> loader = ServiceLoader.load(ConnectorProvider.class);
+    @Autowired
+    private List<ConnectorProvider<?>> providers;
     private final Map<Long, SimpleConnector> activeConnectors = new LinkedHashMap<>();
-    private final Map<String, ConnectorProvider<?>> providers = new LinkedHashMap<>();
 
     @Autowired private SystemDAO systemDAO;
     
-    public ConnectorRegistry() {
-        loader.forEach(p -> this.providers.put(p.getConnectorId(), p));
-    }
-    
+
     @SuppressWarnings("resource")
     @PostConstruct
     @Transactional // needs to be public because of the TRX annotation
@@ -73,10 +69,7 @@ class ConnectorRegistry {
     }
     
     Collection<String> getConnectors() {
-        return providers.keySet();
-    }
-    Collection<ConnectorProvider<?>> getProviders() {
-        return providers.values();
+        return providers.stream().map(c -> c.getConnectorId()).collect(Collectors.toList());
     }
 
     @SuppressWarnings("resource")
@@ -98,11 +91,14 @@ class ConnectorRegistry {
      */
     @NotNull
     ConnectorProvider<?> getProvider(String connectorId) {
-        return providers.values().stream().filter(
+        return providers.stream().filter(
             p -> p.getConnectorId().equals(connectorId))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("No provider found for " 
-                    + connectorId + " known connectors: " + providers.keySet()));
+            .orElseThrow(() -> new IllegalArgumentException(
+                    "No provider found for " + connectorId + " known connectors: " 
+                    + providers.stream().map(p -> p.getConnectorId()).collect(Collectors.toList()) 
+                )
+            );
     }
 
     SimpleConnector getConnector(SystemId id) {

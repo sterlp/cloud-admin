@@ -35,9 +35,7 @@ public class SystemConverters {
             if (source.getVersion() != null) {
                 result.setVersion(new ETag(source.getVersion()));
             }
-            if (source.getConfig() != null) {
-                source.getConfig().forEach(c -> result.addConfig(c.getId().getName(), c.getValue()));
-            }
+            result.setConfig(source.getConfig());
             return result;
         }
     }

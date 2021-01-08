@@ -22,8 +22,8 @@ import org.sterl.cloudadmin.api.system.ExternalResourceId;
 import org.sterl.cloudadmin.api.system.SystemId;
 import org.sterl.cloudadmin.impl.connector.control.ConnectorBM;
 import org.sterl.cloudadmin.impl.connector.control.ConnectorHelper;
+import org.sterl.cloudadmin.impl.connector.example.ExampleConfig;
 import org.sterl.cloudadmin.impl.connector.example.ExampleConnector;
-import org.sterl.cloudadmin.impl.connector.example.ExampleProvider;
 import org.sterl.cloudadmin.impl.connector.exception.ConnectorException;
 import org.sterl.cloudadmin.impl.identity.control.IdentityBM;
 import org.sterl.cloudadmin.impl.identity.dao.IdentityDAO;
@@ -37,6 +37,9 @@ import org.sterl.cloudadmin.impl.system.dao.SystemCredentialDAO;
 import org.sterl.cloudadmin.impl.system.dao.SystemDAO;
 import org.sterl.cloudadmin.impl.system.model.SystemBE;
 import org.sterl.cloudadmin.impl.system.model.SystemCredentialBE;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -59,6 +62,7 @@ class RoleBMIT {
     SystemId activeCloud;
     
     @Autowired ConnectorHelper helper;
+    @Autowired ObjectMapper mapper;
     
     final RoleId adminId = new RoleId("ADMIN_ROLE");
     
@@ -78,18 +82,30 @@ class RoleBMIT {
         SystemCredentialBE credential = trx.execute((status) -> credentialDAO.save(new SystemCredentialBE("NONE")));
 
         SystemBE git = new SystemBE("GIT", ExampleConnector.class.getSimpleName());
-        git.addConfig(ExampleProvider.PERMISSIONS_PROP, "READ, WRITE, ADMIN");
-        git.addConfig(ExampleProvider.RESOURCES_PROP, "FooTeams:Project, Repo_Team_1:Repository, Repo_Team_2:Repository");
+        git.setConfig(
+                toString(new ExampleConfig(
+                        "FooTeams:Project, Repo_Team_1:Repository, Repo_Team_2:Repository", 
+                        "READ, WRITE, ADMIN")
+                    )
+            );
         activeGit = service.activate(git, credential).getSystem().getStrongId();
         
         SystemBE confluence = new SystemBE("Confluence", ExampleConnector.class.getSimpleName());
-        confluence.addConfig(ExampleProvider.PERMISSIONS_PROP, "VIEW, COMMENT, EDIT, ADMIN");
-        confluence.addConfig(ExampleProvider.RESOURCES_PROP, "Space_Team_1, SpaceTeam_2");
+        confluence.setConfig(
+                toString(new ExampleConfig(
+                        "Space_Team_1, SpaceTeam_2", 
+                        "VIEW, COMMENT, EDIT, ADMIN")
+                    )
+            );
         activateConfluence = service.activate(confluence, credential).getSystem().getStrongId();
         
         SystemBE cloud = new SystemBE("OpenShift", ExampleConnector.class.getSimpleName());
-        cloud.addConfig(ExampleProvider.PERMISSIONS_PROP, "MEMBER, ROOT");
-        cloud.addConfig(ExampleProvider.RESOURCES_PROP, "Cloud_Team_1, Cloud_Team_2");
+        confluence.setConfig(
+                toString(new ExampleConfig(
+                        "Cloud_Team_1, Cloud_Team_2", 
+                        "MEMBER, ROOT")
+                    )
+            );
         activeCloud = service.activate(cloud, credential).getSystem().getStrongId();
     }
     
@@ -140,5 +156,13 @@ class RoleBMIT {
         helper.getExampleConnector(this.activeCloud).print();
         System.out.println("GIT");
         helper.getExampleConnector(this.activeGit).print();
+    }
+    
+    String toString(ExampleConfig config) {
+        try {
+            return mapper.writeValueAsString(config);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

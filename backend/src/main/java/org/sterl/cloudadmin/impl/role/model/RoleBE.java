@@ -74,7 +74,7 @@ public class RoleBE extends EntityWithId<RoleId, String> {
         final Set<SystemRoleBE> result = new LinkedHashSet<>();
         
         for (SystemResourceBE sr : resources) {
-            SystemRoleBE systemRole = findOrAdd(sr);
+            final SystemRoleBE systemRole = findOrAdd(sr);
             if (systemRole.add(sr)) result.add(systemRole);
         }
         return result;

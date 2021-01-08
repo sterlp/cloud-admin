@@ -84,7 +84,7 @@ public class SystemModelIT {
         assertNotNull(c.getId());
         assertFalse(TestTransaction.isActive());
         s = systemDAO.save(new SystemBE()
-            .addConfig("foo", "bar")
+            .setConfig("foo, bar")
             .setConnectorId("foo")
             .setName("Test System")
             .setCredential(em.getReference(SystemCredentialBE.class, c.getId()))
@@ -94,7 +94,7 @@ public class SystemModelIT {
         assertEquals(c.getId(), s.getCredential().getId());
         
         systemDAO.save(new SystemBE()
-            .addConfig("foo", "bar")
+            .setConfig("foo, bar")
             .setConnectorId("foo")
             .setName("Test System 2")
             .setCredential(em.getReference(SystemCredentialBE.class, c.getId()))

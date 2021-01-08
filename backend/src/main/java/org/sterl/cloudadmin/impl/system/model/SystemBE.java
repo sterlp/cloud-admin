@@ -1,8 +1,6 @@
 package org.sterl.cloudadmin.impl.system.model;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -62,11 +59,10 @@ public class SystemBE extends EntityWithId<SystemId, Long> {
     
     @Version
     private Long version;
-
-    @OrderBy("name")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "system")
-    private Set<SystemConfigBE> config = new LinkedHashSet<>();
     
+    @Column(columnDefinition = "TEXT")
+    private String config;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "system", orphanRemoval = true)
     private List<SystemResourceBE> resources;
     
@@ -97,14 +93,5 @@ public class SystemBE extends EntityWithId<SystemId, Long> {
         this();
         this.name = name;
         this.connectorId = connectorId;
-    }
-    
-    public SystemBE addConfig(String name, String value) {
-        SystemConfigBE cfg = config.stream().filter(c -> c.isNamed(name))
-            .findFirst()
-            .orElseGet(() -> new SystemConfigBE(this, name));
-        cfg.setValue(value);
-        this.config.add(cfg);
-        return this;
     }
 }

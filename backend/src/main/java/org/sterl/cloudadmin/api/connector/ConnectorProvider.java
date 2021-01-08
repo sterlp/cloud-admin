@@ -1,12 +1,12 @@
 package org.sterl.cloudadmin.api.connector;
 
-import java.util.List;
-
 import org.sterl.cloudadmin.api.system.System;
 import org.sterl.cloudadmin.api.system.SystemCredential;
 import org.sterl.cloudadmin.impl.connector.exception.ConnectorException;
 
 public interface ConnectorProvider<T extends SimpleConnector> {
+
+    void validateConfig(System system);
 
     /**
      * Creates this connector -- the {@link System} 
@@ -24,9 +24,5 @@ public interface ConnectorProvider<T extends SimpleConnector> {
     
     /** @return Return a display name for the User in the UI */
     String getName();
-    
-    /**
-     * @return the {@link List} of supported {@link ConfigMetaData}, maybe empty. 
-     */
-    List<ConfigMetaData> getConfigMeta();
+
 }

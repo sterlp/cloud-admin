@@ -1,10 +1,15 @@
 package org.sterl.cloudadmin.impl.connector.example;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-import org.sterl.cloudadmin.api.connector.ConfigMetaData;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.sterl.cloudadmin.api.connector.ConnectorProvider;
 import org.sterl.cloudadmin.api.system.ExternalResourceId;
 import org.sterl.cloudadmin.api.system.System;
@@ -12,33 +17,48 @@ import org.sterl.cloudadmin.api.system.SystemCredential;
 import org.sterl.cloudadmin.api.system.SystemResource;
 import org.sterl.cloudadmin.impl.connector.exception.ConnectorException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Service
 public class ExampleProvider implements ConnectorProvider<ExampleConnector> {
-    public static final String PERMISSIONS_PROP = "PERMISSIONS";
-    /**
-     * <li>name:type --> e.g. PERSONS:TABLE
-     */
-    public static final String RESOURCES_PROP = "RESOURCES";
+
+    @Autowired ObjectMapper objectMapper;
+    @Autowired Validator validator;
     
-    private static final List<ConfigMetaData> CONFIG_META =
-            Arrays.asList(
-                ConfigMetaData.builder().label("Permissions").property(PERMISSIONS_PROP).description("Comma separated list of supported permissions e.g.: READ, WRITE").build(),
-                ConfigMetaData.builder().label("Resources").property(RESOURCES_PROP).description("Comma separated list of supported resources (colon type is optional) e.g.: PERSONS:TABLE, ADDRESS:TABLE, SALARY:VIEW").build()
-            );
+    public void validateConfig(System system) {
+        
+        try {
+            final ExampleConfig api = objectMapper.readValue(system.getConfig(), ExampleConfig.class);
+            final Set<ConstraintViolation<ExampleConfig>> validationResult = validator.validate(api);
+            if (validationResult != null && !validationResult.isEmpty()) {
+                throw new ConstraintViolationException(validationResult);
+            }
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
     
     @Override
     public ExampleConnector create(System system, SystemCredential credential) throws ConnectorException {
-        ExampleConnector result = new ExampleConnector();
-        final String permissions = system.getConfig().get(PERMISSIONS_PROP);
-        if (permissions != null) {
-            result.setAllPermissions(permissions.split(","));
-        }
-        
-        List<SystemResource> managedResources = new ArrayList<>();
-        final String resourcesString = system.getConfig().get(RESOURCES_PROP);
-        if (resourcesString != null) {
-            String[] resources = resourcesString.split(",");
-            for (String r : resources) {
-                SystemResource resource = new SystemResource();
+
+        ExampleConfig api = null;
+        final ExampleConnector result = new ExampleConnector();
+        if (system.getConfig() != null && system.getConfig().length() > 1) {
+            try {
+                api = objectMapper.readValue(system.getConfig(), ExampleConfig.class);
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to parse the configuration: " 
+                        + system.getConfig(), e);
+            }
+            
+            
+            result.setAllPermissions(api.getPermissions().split(","));
+            
+            final List<SystemResource> managedResources = new ArrayList<>();
+            final String[] resources = api.getResource().split(",");
+            for (final String r : resources) {
+                final SystemResource resource = new SystemResource();
                 resource.setSystemId(system.getId());
                 resource.setExternalId(ExternalResourceId.newExternalResourceId(r));
                 managedResources.add(resource);
@@ -51,11 +71,6 @@ public class ExampleProvider implements ConnectorProvider<ExampleConnector> {
     @Override
     public String getName() {
         return "Example in Memory Connector";
-    }
-
-    @Override
-    public List<ConfigMetaData> getConfigMeta() {
-        return CONFIG_META;
     }
 
     @Override

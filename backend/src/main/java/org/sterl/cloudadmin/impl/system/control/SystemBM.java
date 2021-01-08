@@ -95,6 +95,7 @@ public class SystemBM {
     public List<SystemResourceBE> getResources(SystemId systemId, Collection<ExternalResourceId> resources) {
         List<SystemResourceBE> result = new ArrayList<>(resources.size());
         for (ExternalResourceId er : resources) {
+            // TODO consider list load
             result.add(resourcesDAO.findBySystemIdAndNameAndType(Id.valueOf(systemId), er.getName(), er.getType()));
         }
         return result; 
