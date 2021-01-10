@@ -20,5 +20,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+    - name: Setup Node 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+    - name: Setup angular
+      run: npm install -g @angular/cli
     - name: Build with Maven
       run: mvn -B package --file pom.xml
