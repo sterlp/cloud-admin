@@ -72,9 +72,8 @@ public class SystemBE extends EntityWithId<SystemId, Long> {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "system", orphanRemoval = true)
     private List<SystemAccountBE> accounts;
     
-    @NotNull
-    @ManyToOne(optional = false, cascade = {}, fetch = FetchType.LAZY) 
-    @JoinColumn(name="CREDENTIAL_ID", nullable=false, updatable=true,
+    @ManyToOne(optional = true, cascade = {}, fetch = FetchType.LAZY) 
+    @JoinColumn(name="CREDENTIAL_ID", nullable = true, updatable = true,
                 foreignKey = @ForeignKey(name = "FK_SYSTEM_TO_CREDENTIAL"))
     private SystemCredentialBE credential;
     

@@ -95,6 +95,9 @@ public class RoleBE extends EntityWithId<RoleId, String> {
     }
     
     private <T extends HasSystem> SystemRoleBE findOrAdd(T match) {
+        if (match == null) {
+            throw new NullPointerException("Cannot add null to given role: " + id);
+        }
         SystemRoleBE found;
         if (systemRoles.isEmpty()) {
             found = new SystemRoleBE(this, match.getSystem());

@@ -1,11 +1,10 @@
 package org.sterl.cloudadmin.impl.system.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.sterl.cloudadmin.api.system.SystemId;
-import org.sterl.cloudadmin.impl.system.model.SystemBE;
-import org.sterl.cloudadmin.impl.system.model.SystemResourceBE;
 
 class SystemResourceBETest {
 

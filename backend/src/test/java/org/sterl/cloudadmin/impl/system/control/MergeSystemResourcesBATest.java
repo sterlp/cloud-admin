@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sterl.cloudadmin.api.system.SystemId;
-import org.sterl.cloudadmin.impl.system.control.MergeSystemResourcesBA;
 import org.sterl.cloudadmin.impl.system.dao.SystemResourceDAO;
 import org.sterl.cloudadmin.impl.system.model.SystemBE;
 import org.sterl.cloudadmin.impl.system.model.SystemResourceBE;

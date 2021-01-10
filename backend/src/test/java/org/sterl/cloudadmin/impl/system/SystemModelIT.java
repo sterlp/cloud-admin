@@ -52,7 +52,7 @@ import org.sterl.cloudadmin.impl.system.model.SystemResourceBE;
 @TestInstance(Lifecycle.PER_CLASS)
 @Rollback(false)
 @TestMethodOrder(OrderAnnotation.class)
-@Transactional(propagation= Propagation.NOT_SUPPORTED)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class SystemModelIT {
 
     @Autowired SystemCredentialDAO credentialDAO;

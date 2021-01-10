@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -36,12 +35,12 @@ public class RoleBM {
     @Autowired SystemBM systemBM;
     
     public RoleBE addToRole(RoleId roleId, 
-            List<SystemResourceBE> resource,
+            List<SystemResourceBE> resources,
             List<SystemPermissionBE> permissions) {
 
-        Optional<RoleBE> find = roleDAO.findById(Id.valueOf(roleId));
+        final var existingRole = roleDAO.findById(Id.valueOf(roleId));
         
-        return addToRole(find.orElse(new RoleBE(roleId)), resource, permissions);
+        return addToRole(existingRole.orElse(new RoleBE(roleId)), resources, permissions);
     }
     
     public RoleBE addToRole(RoleBE role, 

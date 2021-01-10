@@ -5,6 +5,10 @@ import java.util.Iterator;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Main goal is to merge a list of <code>current</code> available resources
+ * with a list of <code>toSet</code> resource found in the source system into the current DB.
+ */
 abstract class AbstractMergeBA<E, R> {
 
     protected abstract JpaRepository<E, ?> getRepository();

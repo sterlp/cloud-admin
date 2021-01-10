@@ -6,11 +6,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.sterl.cloudadmin.api.system.ExternalAccountId;
 import org.sterl.cloudadmin.api.system.ExternalPermissionId;
 import org.sterl.cloudadmin.api.system.ExternalResourceId;
@@ -22,7 +20,6 @@ import org.sterl.cloudadmin.impl.system.dao.SystemAccountDAO;
 import org.sterl.cloudadmin.impl.system.dao.SystemCredentialDAO;
 import org.sterl.cloudadmin.impl.system.dao.SystemDAO;
 import org.sterl.cloudadmin.impl.system.dao.SystemPermissionDAO;
-import org.sterl.cloudadmin.impl.system.dao.SystemResourceDAO;
 import org.sterl.cloudadmin.impl.system.model.SystemAccountBE;
 import org.sterl.cloudadmin.impl.system.model.SystemBE;
 import org.sterl.cloudadmin.impl.system.model.SystemCredentialBE;
@@ -33,9 +30,10 @@ import org.sterl.cloudadmin.impl.system.model.SystemResourceBE;
 //@Transactional
 public class SystemBM {
 
+    
     @Autowired SystemDAO systemDAO;
     @Autowired SystemPermissionDAO permissionDAO;
-    @Autowired SystemResourceDAO resourcesDAO;
+    
     @Autowired SystemAccountDAO systemAccountDAO;
     @Autowired SystemCredentialDAO systemCredentialDAO;
     @Autowired MergeSystemResourcesBA mergeResourcesBA;
@@ -96,7 +94,7 @@ public class SystemBM {
         List<SystemResourceBE> result = new ArrayList<>(resources.size());
         for (ExternalResourceId er : resources) {
             // TODO consider list load
-            result.add(resourcesDAO.findBySystemIdAndNameAndType(Id.valueOf(systemId), er.getName(), er.getType()));
+            result.add(mergeResourcesBA.getOrCreate(systemId, er));
         }
         return result; 
     }
