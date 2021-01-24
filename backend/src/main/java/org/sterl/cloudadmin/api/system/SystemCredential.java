@@ -3,8 +3,6 @@ package org.sterl.cloudadmin.api.system;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.sterl.cloudadmin.impl.common.id.ETag;
-
 import lombok.Data;
 
 @Data

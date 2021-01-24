@@ -26,10 +26,11 @@ import org.sterl.cloudadmin.impl.role.model.RoleBE;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @Getter @Setter
 @EqualsAndHashCode(of = "name", callSuper = true)
-@Entity
+@Entity @Accessors(chain = true)
 @Table(name = "IDENTITY", uniqueConstraints = @UniqueConstraint(name = "UC_IDENTITY_NAME", columnNames = "name"))
 public class IdentityBE extends EntityWithId<IdentityId, Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
